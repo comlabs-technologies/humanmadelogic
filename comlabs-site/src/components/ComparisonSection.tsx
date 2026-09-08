@@ -7,7 +7,7 @@ const comparisonData = [
   {
     aspect: 'Typography',
     generic: 'System fonts, inconsistent weights',
-    comlabs: 'Inter variable, considered hierarchy',
+    comlabs: 'Google Sans with Inter, tight tracking',
   },
   {
     aspect: 'Motion',
