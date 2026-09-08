@@ -12,48 +12,32 @@ interface ButtonProps {
   size?: 'default' | 'large';
 }
 
-export function Button({ 
-  variant = 'primary', 
-  children, 
-  href, 
-  onClick, 
+export function Button({
+  variant = 'primary',
+  children,
+  href,
+  onClick,
   className = '',
-  size = 'default'
+  size = 'default',
 }: ButtonProps) {
   const baseStyles = `
-    inline-flex items-center justify-center
-    font-medium transition-all duration-200 ease-out
-    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wine/20
+    inline-flex items-center justify-center gap-2
+    font-medium tracking-tight transition-colors duration-200 ease-out
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ink/20
   `;
 
   const variants = {
-    primary: `
-      bg-wine text-surface
-      hover:bg-wine/90
-      active:bg-wine/95
-      rounded-button
-    `,
-    secondary: `
-      bg-lilac text-ink
-      border border-line
-      hover:bg-lilac/80
-      active:bg-lilac
-      rounded-small
-    `,
-    link: `
-      text-violet
-      hover:underline
-      underline-offset-4
-      decoration-violet/50
-    `,
+    primary: 'bg-ink text-white hover:bg-ink/90 rounded-button',
+    secondary: 'bg-transparent text-ink border border-ink/20 hover:border-ink/40 rounded-button',
+    link: 'text-ink hover:opacity-70',
   };
 
   const sizes = {
-    default: 'h-12 px-5 text-body',
-    large: 'h-14 px-7 text-body-lg',
+    default: 'h-11 px-5 text-body',
+    large: 'h-12 px-6 text-body',
   };
 
-  const classes = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
+  const classes = `${baseStyles} ${variants[variant]} ${variant === 'link' ? '' : sizes[size]} ${className}`;
 
   if (href) {
     return (

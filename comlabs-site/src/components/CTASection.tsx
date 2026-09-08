@@ -1,33 +1,27 @@
-'use client';
-
-import React from 'react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from './Button';
+import { EditorialImage } from './EditorialImage';
+import { editorialImages } from '@/lib/editorialImages';
 
 export function CTASection() {
   return (
-    <section className="py-section-mobile md:py-section-desktop">
-      <div className="max-w-container mx-auto px-gutter-mobile md:px-gutter-desktop">
-        <div className="bg-wine rounded-card p-8 md:p-16 text-center">
-          <h2 className="text-heading-xl md:text-display font-medium text-surface mb-6 leading-tight tracking-tight">
-            Build interfaces that feel authored
+    <section id="get-superhuman" className="relative overflow-hidden">
+      <EditorialImage
+        src={editorialImages.hero}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover opacity-30"
+        objectPosition="68% center"
+      />
+      <div className="absolute inset-0 bg-[#d7e6f2]/88" />
+      <div className="relative z-10 max-w-container mx-auto px-gutter-mobile md:px-gutter-desktop py-20 md:py-28">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+          <h2 className="font-sans text-heading-lg md:text-heading-xl tracking-tight text-ink max-w-[640px]">
+            AI that works everywhere you work
           </h2>
-          <p className="text-body-lg text-lilac/80 max-w-[560px] mx-auto mb-10 leading-relaxed">
-            Join teams at Vercel, Linear, and Raycast who ship polished interfaces 
-            faster with Comlabs. Precision components, purposeful motion, editorial restraint.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button href="#get-started" size="large" className="bg-surface text-wine hover:bg-surface/90">
-              Get started
-            </Button>
-            <Button 
-              variant="secondary" 
-              href="#pricing" 
-              size="large"
-              className="border-white/30 text-surface hover:bg-white/10 bg-transparent"
-            >
-              View pricing
-            </Button>
-          </div>
+          <Button href="#signin" size="large" className="bg-white text-ink hover:bg-white/90 shrink-0">
+            Get Superhuman
+            <ArrowRight size={16} />
+          </Button>
         </div>
       </div>
     </section>
