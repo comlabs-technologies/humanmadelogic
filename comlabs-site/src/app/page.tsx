@@ -18,8 +18,8 @@ export default function Home() {
       <TrustStrip />
       <EditorialSplit />
       <SystemSection />
-      <LagoonFeature />
       <FeatureRows />
+      <LagoonFeature />
       <ComparisonSection />
       <TestimonialSection />
       <CTASection />

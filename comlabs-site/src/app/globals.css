@@ -1,8 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;460;500;540;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 700;
+  src: url('/fonts/google-sans-latin-wght-normal.woff2') format('woff2-variations');
+}
 
 :root {
   --canvas: #f2f0eb;
@@ -30,7 +38,8 @@
 }
 
 html {
-  font-family: 'Inter', 'General Sans', system-ui, sans-serif;
+  font-family: 'Google Sans', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.022em;
   font-feature-settings: 'cv02', 'cv03', 'cv04';
 }
 
@@ -39,6 +48,26 @@ body {
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Google Sans', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.028em;
+}
+
+p, li, blockquote,
+.text-body, .text-body-lg, .text-label, .text-subheading {
+  font-family: 'Inter', 'Google Sans', system-ui, sans-serif;
+}
+
+.hero-photo {
+  object-position: 64% center;
+}
+
+@media (min-width: 1024px) {
+  .hero-photo {
+    object-position: 68% center;
+  }
 }
 
 a {
