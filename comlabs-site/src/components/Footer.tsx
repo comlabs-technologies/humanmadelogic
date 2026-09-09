@@ -15,7 +15,7 @@ export function Footer() {
                 aria-hidden="true"
                 className="inline-block w-[7px] h-[7px] rounded-[2px] bg-white/70 translate-y-[-1px]"
               />
-              <span className="text-[17px] font-semibold tracking-[-0.045em]">
+              <span className="font-display text-[17px] font-semibold tracking-[-0.045em]">
                 {siteConfig.name}
               </span>
             </span>

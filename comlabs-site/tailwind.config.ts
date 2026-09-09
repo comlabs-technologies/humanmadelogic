@@ -29,6 +29,7 @@ const config: Config = {
         footer: '#131210',
       },
       fontFamily: {
+        display: ['Google Sans', 'var(--font-sans)', 'system-ui', 'sans-serif'],
         sans: ['var(--font-sans)', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
         secondary: ['var(--font-sans)', 'system-ui', '-apple-system', 'sans-serif'],
         serif: ['var(--font-serif)', 'Iowan Old Style', 'Georgia', 'serif'],

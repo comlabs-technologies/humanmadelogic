@@ -28,7 +28,7 @@ favicon, and an Open Graph fallback image generated at build time.
 ## Stack
 
 - **Next.js 14** (App Router, TypeScript, static export-friendly)
-- **Inter** and **Instrument Serif** self-hosted through `next/font` — no runtime request to a font CDN
+- **Google Sans** (display) self-hosted from `public/fonts`, **Inter** and **Instrument Serif** through `next/font` — no runtime request to a font CDN
 - **Tailwind CSS 3** with a small token layer
 - **lucide-react** for icons
 - No CMS, no database, no environment variables
@@ -127,9 +127,30 @@ add the host to `next.config.js` under `images.remotePatterns`.
 - Radii: `rounded-scene` (16px) for elevated product scenes,
   `rounded-panel` (14px) for nested cards, `rounded-control` (9px) for controls
 
-Typefaces are loaded in `src/app/layout.tsx` with `next/font/google` and exposed
-as the `--font-sans` and `--font-serif` CSS variables that Tailwind reads. Swap
-the imports there to change the pairing.
+### Typography
+
+The template uses a two-tier system: a display face for headings, wordmarks and
+figures, and Inter for body copy, UI labels and the product scenes.
+
+| Role | Face | Loaded from |
+| --- | --- | --- |
+| Display (`h1`–`h6`, `font-display`) | Google Sans | `@font-face` in `globals.css`, file in `public/fonts/` |
+| Body (default, `font-sans`) | Inter | `next/font/google` in `layout.tsx` → `--font-sans` |
+| Accent (`font-serif`, pull quotes) | Instrument Serif | `next/font/google` in `layout.tsx` → `--font-serif` |
+
+> **Replace the display face before you ship.** `google-sans-latin-wght-normal.woff2`
+> is Google's proprietary typeface. It is not offered on Google Fonts and is not
+> licensed for redistribution or third-party use, so it is included here only to
+> show the intended composition. Swap it for a face you hold a licence to — the
+> template is built so this is a two-file change:
+>
+> 1. Drop your `.woff2` into `public/fonts/` and update the `@font-face` block at
+>    the top of `src/app/globals.css` (or load the face with `next/font`).
+> 2. Update the `display` entry in `tailwind.config.ts` and the `h1–h6` rule in
+>    `globals.css` to name it.
+>
+> Open faces that sit close to this composition include Figtree and Plus Jakarta
+> Sans; both carry the SIL Open Font License.
 
 A few base styles live in `src/app/globals.css`: the focus ring, the skip link,
 the hero rail system and the footer watermark.

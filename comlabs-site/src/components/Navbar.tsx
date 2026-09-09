@@ -14,7 +14,7 @@ function Wordmark({ className = '' }: { className?: string }) {
         aria-hidden="true"
         className="inline-block w-[7px] h-[7px] rounded-[2px] bg-moss translate-y-[-1px]"
       />
-      <span className="text-[17px] font-semibold tracking-[-0.045em] text-ink">
+      <span className="font-display text-[17px] font-semibold tracking-[-0.045em] text-ink">
         {siteConfig.name}
       </span>
     </span>

@@ -66,7 +66,7 @@ export function Hero() {
 
       <Container className="relative pt-12 sm:pt-16 lg:pt-20 pb-8 text-center">
         <Eyebrow className="mb-5">{hero.eyebrow}</Eyebrow>
-        <h1 className="text-[38px] leading-[1.06] sm:text-[54px] sm:leading-[1.0] lg:text-display lg:leading-[0.98] font-medium tracking-[-0.042em] text-ink max-w-[820px] mx-auto">
+        <h1 className="text-[38px] leading-[1.06] sm:text-[54px] sm:leading-[1.0] lg:text-display lg:leading-[0.98] font-medium tracking-[-0.038em] text-ink max-w-[820px] mx-auto">
           {hero.heading}
         </h1>
         <p className="text-body-lg sm:text-subheading text-muted mt-5 max-w-[600px] mx-auto">

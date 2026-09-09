@@ -64,7 +64,7 @@ export default function PricingPage() {
                 </div>
 
                 <p className="mt-4 flex items-baseline gap-1.5">
-                  <span className="text-[40px] leading-none font-medium tracking-[-0.04em] text-ink">
+                  <span className="font-display text-[40px] leading-none font-medium tracking-[-0.04em] text-ink">
                     {tier.price}
                   </span>
                   <span className="text-[13px] text-subtle">{tier.cadence}</span>
