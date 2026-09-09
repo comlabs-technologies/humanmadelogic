@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Instrument_Serif } from 'next/font/google';
+import { Archivo, Inter, Instrument_Serif } from 'next/font/google';
 import './globals.css';
-import { AnnouncementBar, Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
+import { AppShell } from '@/components/AppShell';
 import { siteConfig } from '@/config/site';
 
 /* Self-hosted at build time — no third-party font request at runtime. */
@@ -17,6 +16,13 @@ const instrumentSerif = Instrument_Serif({
   weight: '400',
   display: 'swap',
   variable: '--font-serif',
+});
+
+/* Grotesk used by the Human Made Logic homepage. */
+const archivo = Archivo({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-grotesk',
 });
 
 export const metadata: Metadata = {
@@ -63,17 +69,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={siteConfig.locale} className={`${inter.variable} ${instrumentSerif.variable}`}>
+    <html
+      lang={siteConfig.locale}
+      className={`${inter.variable} ${instrumentSerif.variable} ${archivo.variable}`}
+    >
       <body className="antialiased min-h-screen flex flex-col">
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
-        <AnnouncementBar />
-        <Navbar />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

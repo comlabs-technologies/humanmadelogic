@@ -27,9 +27,15 @@ const config: Config = {
         signal: '#2f6b57',
         amber: '#9a6a24',
         footer: '#131210',
+        /* Human Made Logic — homepage palette */
+        paper: '#F2F0EB',
+        obsidian: '#151515',
+        slate: '#6B6A66',
+        signalYellow: '#F4BD49',
       },
       fontFamily: {
         display: ['Google Sans', 'var(--font-sans)', 'system-ui', 'sans-serif'],
+        grotesk: ['var(--font-grotesk)', 'Helvetica Neue', 'Arial', 'sans-serif'],
         sans: ['var(--font-sans)', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
         secondary: ['var(--font-sans)', 'system-ui', '-apple-system', 'sans-serif'],
         serif: ['var(--font-serif)', 'Iowan Old Style', 'Georgia', 'serif'],
@@ -47,6 +53,7 @@ const config: Config = {
       },
       maxWidth: {
         container: '1180px',
+        editorial: '1560px',
         prose: '680px',
       },
       spacing: {
