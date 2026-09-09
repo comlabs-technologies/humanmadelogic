@@ -128,3 +128,66 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Human Made Logic — homepage                                         */
+/* ------------------------------------------------------------------ */
+
+.hml {
+  /* Transparent: the paper backdrop sits below the shared WebGL canvas,
+     which in turn sits below this content layer. */
+  background: transparent;
+  color: #151515;
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.hml h1,
+.hml h2,
+.hml h3,
+.hml h4 {
+  font-family: var(--font-grotesk), 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+}
+
+/* Images handed to the shared WebGL canvas fade out once it is drawing,
+   but stay in the DOM so alt text, no-JS and context-loss all still work. */
+.webgl-surface img {
+  transition: opacity 320ms ease;
+}
+
+:root[data-webgl='on'] .webgl-surface img {
+  opacity: 0;
+}
+
+:root[data-webgl='on'] .webgl-surface {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Word-level reveal. The animated copy is aria-hidden; a single visually
+   hidden sentence carries the real text for assistive technology. */
+.hml-word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hml-word {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+.hml-marquee {
+  animation: hml-marquee 38s linear infinite;
+}
+
+@keyframes hml-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hml-marquee { animation: none; }
+}
