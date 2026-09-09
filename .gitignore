@@ -94,3 +94,5 @@ yarn.lock
 *.map
 
 ```
+# TypeScript incremental build info
+*.tsbuildinfo

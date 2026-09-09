@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <defs>
+    <linearGradient id="s1" x1="0" y1="0" x2="0.45" y2="1">
+      <stop offset="0" stop-color="#f0e8d8"/>
+      <stop offset="0.55" stop-color="#ded1b8"/>
+      <stop offset="1" stop-color="#bfae91"/>
+    </linearGradient>
+    <linearGradient id="s2" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#fffdf6" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#fffdf6" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="s3" x1="1" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#332c20" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#332c20" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="ssoft"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="sgrain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="900" fill="url(#s1)"/>
+  <path d="M0 600 L1200 528 L1200 900 L0 900 Z" fill="#9d9075" opacity="0.55"/>
+  <path d="M0 0 L300 0 L150 900 L0 900 Z" fill="url(#s2)"/>
+  <path d="M620 0 L760 0 L640 900 L470 900 Z" fill="url(#s2)" opacity="0.55"/>
+  <path d="M900 0 L1010 0 L1010 540 L900 546 Z" fill="#cdbfa2" opacity="0.85"/>
+  <path d="M1010 0 L1036 0 L1036 538 L1010 540 Z" fill="#95886d" opacity="0.8"/>
+  <rect width="1200" height="900" fill="url(#s3)"/>
+  <g filter="url(#ssoft)" opacity="0.5">
+    <ellipse cx="420" cy="150" rx="300" ry="180" fill="#fffdf3"/>
+    <ellipse cx="1080" cy="820" rx="300" ry="150" fill="#2f2a1f" opacity="0.7"/>
+  </g>
+  <rect y="597" width="1200" height="2" fill="#3f3829" opacity="0.2"/>
+  <rect width="1200" height="900" filter="url(#sgrain)" opacity="0.1"/>
+</svg>

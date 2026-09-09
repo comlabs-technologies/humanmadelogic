@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <defs>
+    <linearGradient id="rb" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#f2ede2"/>
+      <stop offset="0.6" stop-color="#e0d8c8"/>
+      <stop offset="1" stop-color="#c3b9a4"/>
+    </linearGradient>
+    <linearGradient id="rl" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#fffdf6" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#fffdf6" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="rd" x1="1" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#312d24" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#312d24" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="rblur"><feGaussianBlur stdDeviation="24"/></filter>
+    <filter id="rgrain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="700" fill="url(#rb)"/>
+  <g>
+    <rect x="150" width="46" height="700" fill="#cdc2ac" opacity="0.8"/>
+    <rect x="196" width="10" height="700" fill="#9b9079" opacity="0.7"/>
+    <rect x="470" width="46" height="700" fill="#cdc2ac" opacity="0.6"/>
+    <rect x="516" width="10" height="700" fill="#9b9079" opacity="0.5"/>
+    <rect x="820" width="46" height="700" fill="#cdc2ac" opacity="0.45"/>
+    <rect x="866" width="10" height="700" fill="#9b9079" opacity="0.4"/>
+  </g>
+  <path d="M206 0 L470 0 L330 700 L60 700 Z" fill="url(#rl)"/>
+  <path d="M526 0 L700 0 L610 700 L420 700 Z" fill="url(#rl)" opacity="0.55"/>
+  <rect width="1200" height="700" fill="url(#rd)"/>
+  <g filter="url(#rblur)" opacity="0.45">
+    <ellipse cx="330" cy="120" rx="280" ry="160" fill="#fffdf3"/>
+    <ellipse cx="1120" cy="640" rx="300" ry="150" fill="#2c2820" opacity="0.7"/>
+  </g>
+  <rect y="556" width="1200" height="1" fill="#3d382d" opacity="0.2"/>
+  <rect width="1200" height="700" filter="url(#rgrain)" opacity="0.1"/>
+</svg>
