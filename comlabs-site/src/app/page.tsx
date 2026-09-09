@@ -1,23 +1,21 @@
-import { Banner } from '@/components/Banner';
-import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { TrustStrip } from '@/components/TrustStrip';
-import { SuiteSection } from '@/components/SuiteSection';
-import { BrandSection } from '@/components/BrandSection';
-import { CTASection } from '@/components/CTASection';
-import { Footer } from '@/components/Footer';
+import { CapabilitySuite } from '@/components/CapabilitySuite';
+import { FeatureBand } from '@/components/FeatureBand';
+import { UseCases } from '@/components/UseCases';
+import { Testimonials } from '@/components/Testimonials';
+import { CtaBand } from '@/components/CtaBand';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-canvas">
-      <Banner />
-      <Navbar />
+    <>
       <Hero />
       <TrustStrip />
-      <SuiteSection />
-      <BrandSection />
-      <CTASection />
-      <Footer />
-    </main>
+      <CapabilitySuite />
+      <FeatureBand />
+      <UseCases />
+      <Testimonials />
+      <CtaBand />
+    </>
   );
 }

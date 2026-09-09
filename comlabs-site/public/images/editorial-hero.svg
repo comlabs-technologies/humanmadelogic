@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" width="1600" height="800" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Abstract editorial composition of layered daylight">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#f0eade"/>
+      <stop offset="0.5" stop-color="#ded5c3"/>
+      <stop offset="1" stop-color="#bdb19c"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#9c907a"/>
+      <stop offset="1" stop-color="#6c6252"/>
+    </linearGradient>
+    <linearGradient id="shaft" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#fffdf6" stop-opacity="0.96"/>
+      <stop offset="0.7" stop-color="#fffdf6" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#fffdf6" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="deep" x1="1" y1="0" x2="0" y2="0.7">
+      <stop offset="0" stop-color="#2e2a22" stop-opacity="0.68"/>
+      <stop offset="0.6" stop-color="#2e2a22" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#2e2a22" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="0" y1="1" x2="0.6" y2="0">
+      <stop offset="0" stop-color="#12332c" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#12332c" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur1"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="blur2"><feGaussianBlur stdDeviation="8"/></filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="800" fill="url(#wall)"/>
+  <path d="M0 512 L1600 452 L1600 800 L0 800 Z" fill="url(#floor)"/>
+
+  <!-- structural piers -->
+  <g>
+    <path d="M120 0 L232 0 L232 524 L120 512 Z" fill="#cec3ad" opacity="0.9"/>
+    <path d="M232 0 L262 0 L262 528 L232 524 Z" fill="#a2977f" opacity="0.85"/>
+    <path d="M1044 0 L1160 0 L1160 470 L1044 478 Z" fill="#c8bda6" opacity="0.85"/>
+    <path d="M1160 0 L1190 0 L1190 468 L1160 470 Z" fill="#968b74" opacity="0.8"/>
+  </g>
+
+  <!-- daylight shafts -->
+  <g>
+    <path d="M262 0 L560 0 L360 800 L0 800 Z" fill="url(#shaft)" opacity="0.85"/>
+    <path d="M700 0 L820 0 L700 800 L520 800 Z" fill="url(#shaft)" opacity="0.5"/>
+    <path d="M1190 0 L1320 0 L1240 800 L1010 800 Z" fill="url(#shaft)" opacity="0.42"/>
+  </g>
+
+  <!-- cast shadows on the floor -->
+  <g filter="url(#blur2)" opacity="0.55">
+    <path d="M232 528 L262 528 L120 800 L0 800 Z" fill="#514936"/>
+    <path d="M1160 470 L1190 468 L1420 800 L1230 800 Z" fill="#514936" opacity="0.75"/>
+  </g>
+
+  <!-- depth wash -->
+  <rect width="1600" height="800" fill="url(#deep)"/>
+  <g filter="url(#blur1)" opacity="0.5">
+    <ellipse cx="560" cy="180" rx="360" ry="200" fill="#fffdf3"/>
+    <ellipse cx="1480" cy="720" rx="380" ry="180" fill="#2b261d" opacity="0.7"/>
+  </g>
+  <rect width="1600" height="800" fill="url(#teal)"/>
+
+  <rect y="509" width="1600" height="2" fill="#3f3a2e" opacity="0.22"/>
+  <rect width="1600" height="800" filter="url(#grain)" opacity="0.11"/>
+</svg>

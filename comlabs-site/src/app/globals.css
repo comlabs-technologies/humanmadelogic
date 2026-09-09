@@ -1,27 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'Google Sans';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 400 700;
-  src: url('/fonts/google-sans-latin-wght-normal.woff2') format('woff2-variations');
-}
-
 :root {
-  --canvas: #f5f3ee;
+  --canvas: #f6f4ef;
   --surface: #ffffff;
-  --ink: #171717;
-  --muted: #5c5c5c;
-  --line: #e6e4df;
-  --banner: #241833;
-  --forest: #0e3b32;
-  --footer: #1a1210;
-  --button: #171717;
+  --ink: #141412;
+  --muted: #5b594f;
+  --line: #e3dfd4;
+  --moss: #14322c;
+  --footer: #131210;
+  --focus: #14322c;
 }
 
 * {
@@ -31,9 +20,10 @@
 }
 
 html {
-  font-family: 'Google Sans', 'Inter', system-ui, sans-serif;
-  letter-spacing: -0.022em;
+  font-family: var(--font-sans), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  letter-spacing: -0.014em;
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -44,13 +34,9 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Google Sans', 'Inter', system-ui, sans-serif;
   letter-spacing: -0.03em;
-}
-
-p, li, blockquote,
-.text-body, .text-body-lg, .text-label, .text-subheading {
-  font-family: 'Inter', 'Google Sans', system-ui, sans-serif;
+  font-weight: 500;
+  text-wrap: balance;
 }
 
 a {
@@ -60,50 +46,62 @@ a {
 
 button {
   font-family: inherit;
+  color: inherit;
 }
 
-.glass-panel {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+/* Accessible focus styles — visible on every interactive element. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-.grain-scene {
-  position: relative;
-  overflow: hidden;
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 100;
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 9px;
+  font-size: 14px;
+  transition: top 180ms ease;
 }
 
-.grain-scene::after {
+.skip-link:focus {
+  top: 16px;
+}
+
+/* Barely-visible vertical rail system. Hero only. */
+.hero-rails {
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(20, 20, 18, 0.032) 0 1px,
+    transparent 1px calc(100% / 6)
+  );
+  background-size: 100% 100%;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent);
+}
+
+/* Fine grain used sparingly over editorial artwork. */
+.editorial-grain::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.28;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
-}
-
-.scene-mail {
-  background: linear-gradient(145deg, #6ea8d9 0%, #d7a3c6 48%, #e8d5c4 100%);
-}
-
-.scene-grammarly {
-  background: linear-gradient(145deg, #5b6ecf 0%, #8f7cc8 46%, #c9b8e8 100%);
-}
-
-.scene-docs {
-  background: linear-gradient(145deg, #7fbf73 0%, #c9d36a 52%, #f0e38a 100%);
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
 }
 
 .footer-watermark {
-  font-family: 'Google Sans', sans-serif;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.06em;
-  font-size: clamp(64px, 14vw, 180px);
-  line-height: 0.8;
-  color: rgba(255, 255, 255, 0.045);
+  font-size: clamp(72px, 15vw, 190px);
+  line-height: 0.78;
+  color: rgba(255, 255, 255, 0.05);
   user-select: none;
   pointer-events: none;
 }

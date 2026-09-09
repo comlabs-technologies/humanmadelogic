@@ -1,140 +1,117 @@
-'use client';
-
 import React from 'react';
-import { ArrowRight, Search } from 'lucide-react';
-import { Button } from './Button';
-import { EditorialImage } from './EditorialImage';
+import { ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { EditorialImage } from '@/components/ui/EditorialImage';
+import { Avatar, FieldLabel, Panel, PanelFootnote, PanelHead, StatusPill } from '@/components/ui/Panel';
+import { Container, Eyebrow } from '@/components/ui/Section';
+import { hero } from '@/config/content';
+import { images } from '@/config/images';
 
-function ChatPanel() {
-  return (
-    <div className="glass-panel rounded-card p-3 w-[240px]">
-      <p className="font-secondary text-label text-muted tracking-tight mb-3">Ask Go</p>
-      <div className="space-y-2">
-        <div className="bg-white/80 rounded-small px-3 py-2">
-          <p className="font-secondary text-[13px] tracking-tight text-ink">
-            Prep me for the 2pm with Rivian.
-          </p>
-        </div>
-        <div className="bg-white/50 rounded-small px-3 py-2">
-          <p className="font-secondary text-[13px] tracking-tight text-muted">
-            Brief is ready. Three open questions and a draft agenda.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
+function CommandCentre() {
+  const { commandPanel } = hero;
 
-function CommandPanel() {
   return (
-    <div className="glass-panel rounded-card p-3 w-[280px]">
-      <div className="flex items-center gap-2 px-2 py-2 border-b border-black/5 mb-2">
-        <Search size={14} className="text-muted" />
-        <span className="font-secondary text-[13px] tracking-tight text-muted">Search Superhuman</span>
-      </div>
-      <div className="space-y-1">
-        {['Jump to Mail', 'Open daily brief', 'Share availability'].map((item) => (
-          <div key={item} className="px-2 py-1.5 rounded-small hover:bg-white/60">
-            <p className="font-secondary text-[13px] tracking-tight text-ink">{item}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function TeamPanel() {
-  return (
-    <div className="glass-panel rounded-card p-3 w-[230px]">
-      <p className="font-secondary text-label text-muted tracking-tight mb-3">Team summary</p>
-      <div className="space-y-2.5">
-        {[
-          { name: 'Amina Cole', detail: 'Docs reviewed' },
-          { name: 'Joel Park', detail: 'Waiting on legal' },
-          { name: 'Priya Shah', detail: 'Shipped notes' },
-        ].map((row) => (
-          <div key={row.name} className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-ink/10 text-[10px] flex items-center justify-center font-sans tracking-tight">
-              {row.name.split(' ').map((n) => n[0]).join('')}
+    <Panel elevated className="w-full sm:w-[352px]">
+      <PanelHead
+        title={commandPanel.title}
+        meta={commandPanel.subtitle}
+        accessory={<StatusPill label="Live" tone="done" />}
+      />
+      <ul className="divide-y divide-hairline">
+        {commandPanel.rows.map((row) => (
+          <li key={row.label} className="px-4 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[13px] tracking-tight text-ink truncate">{row.label}</p>
+              <StatusPill label={row.status} tone={row.tone} />
             </div>
-            <div>
-              <p className="font-secondary text-[12px] tracking-tight text-ink leading-tight">{row.name}</p>
-              <p className="font-secondary text-[11px] tracking-tight text-muted">{row.detail}</p>
+            <div className="flex items-center gap-2 mt-2">
+              <Avatar name={row.owner} size={20} />
+              <span className="text-[11px] tracking-tight text-subtle">{row.owner}</span>
             </div>
-          </div>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+      <PanelFootnote>{commandPanel.footnote}</PanelFootnote>
+    </Panel>
   );
 }
 
-function MailPanel() {
+function EvidenceCards({ stacked = false }: { stacked?: boolean }) {
   return (
-    <div className="glass-panel rounded-card p-3 w-[260px]">
-      <p className="font-secondary text-label text-muted tracking-tight mb-3">Inbox</p>
-      <div className="space-y-2">
-        {[
-          { from: 'Figma', subject: 'Prototype comments' },
-          { from: 'Zapier', subject: 'Workflow paused' },
-          { from: 'DoorDash', subject: 'Launch checklist' },
-        ].map((row) => (
-          <div key={row.subject} className="flex flex-col gap-0.5 py-1 border-b border-black/5 last:border-0">
-            <p className="font-secondary text-[12px] tracking-tight text-ink">{row.from}</p>
-            <p className="font-secondary text-[12px] tracking-tight text-muted">{row.subject}</p>
-          </div>
-        ))}
-      </div>
+    <div className={`flex gap-3 ${stacked ? 'flex-col' : 'flex-col sm:flex-row'}`}>
+      {hero.evidenceCards.map((card) => (
+        <div
+          key={card.label}
+          className={`flex-1 bg-surface border border-line rounded-panel shadow-panel px-3.5 py-3 ${
+            stacked ? 'w-[196px]' : 'w-full'
+          }`}
+        >
+          <FieldLabel>{card.label}</FieldLabel>
+          <p className="text-[13px] tracking-tight text-ink mt-1.5">{card.value}</p>
+          <p className="text-[11px] tracking-tight text-subtle mt-1">{card.detail}</p>
+        </div>
+      ))}
     </div>
   );
 }
 
 export function Hero() {
   return (
-    <section className="bg-canvas">
-      <div className="max-w-container mx-auto px-gutter-mobile md:px-gutter-desktop pt-16 md:pt-24 pb-10 text-center">
-        <h1 className="font-sans text-[40px] sm:text-[56px] md:text-display font-medium text-ink tracking-tight max-w-[780px] mx-auto">
-          Superpowers, everywhere you work
+    <section className="relative bg-canvas overflow-hidden">
+      {/* Barely-visible vertical rail system — hero only. */}
+      <div
+        aria-hidden="true"
+        className="hero-rails absolute inset-x-0 top-0 h-[560px] max-w-container mx-auto"
+      />
+
+      <Container className="relative pt-12 sm:pt-16 lg:pt-20 pb-8 text-center">
+        <Eyebrow className="mb-5">{hero.eyebrow}</Eyebrow>
+        <h1 className="text-[38px] leading-[1.06] sm:text-[54px] sm:leading-[1.0] lg:text-display lg:leading-[0.98] font-medium tracking-[-0.042em] text-ink max-w-[820px] mx-auto">
+          {hero.heading}
         </h1>
-        <p className="font-secondary text-body-lg md:text-subheading text-muted mt-5 max-w-[520px] mx-auto tracking-tight">
-          Mail, Docs, and AI that works in every app and tab.
+        <p className="text-body-lg sm:text-subheading text-muted mt-5 max-w-[600px] mx-auto">
+          {hero.body}
         </p>
-        <div className="mt-8 flex justify-center">
-          <Button href="#get-superhuman" size="large">
-            Get Superhuman
-            <ArrowRight size={16} />
+        <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Button href={hero.primaryCta.href} size="large" className="w-full sm:w-auto">
+            {hero.primaryCta.label}
+            <ArrowRight size={16} aria-hidden="true" />
+          </Button>
+          <Button
+            href={hero.secondaryCta.href}
+            variant="secondary"
+            size="large"
+            className="w-full sm:w-auto"
+          >
+            {hero.secondaryCta.label}
           </Button>
         </div>
-      </div>
+      </Container>
 
-      <div className="relative mx-auto max-w-[1280px] px-gutter-mobile md:px-gutter-desktop pb-8">
-        <div className="relative aspect-[4/5] md:aspect-[16/9] overflow-hidden bg-[#1a1a1a] rounded-card">
-          <EditorialImage
-            src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=1800"
-            alt="Person looking upward"
-            className="absolute inset-0 w-full h-full object-cover"
-            objectPosition="center 18%"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/20" />
-
-          <div className="hidden md:block absolute left-[6%] top-[22%]">
-            <ChatPanel />
-          </div>
-          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-[14%]">
-            <CommandPanel />
-          </div>
-          <div className="hidden md:block absolute right-[7%] top-[18%]">
-            <TeamPanel />
-          </div>
-          <div className="hidden md:block absolute right-[12%] bottom-[10%]">
-            <MailPanel />
+      <Container className="relative pb-14 lg:pb-28">
+        <div className="relative">
+          <div className="relative editorial-grain rounded-scene overflow-hidden border border-line aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/8]">
+            <EditorialImage
+              asset={images.hero}
+              priority
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div aria-hidden="true" className="absolute inset-0 bg-ink/5" />
           </div>
 
-          <div className="md:hidden absolute inset-x-4 bottom-4">
-            <CommandPanel />
+          {/* Product proof: one substantial panel crossing the image edge,
+              with two small evidence cards attached to it. */}
+          <div className="hidden lg:flex items-end gap-3 absolute left-8 -bottom-16 z-10">
+            <CommandCentre />
+            <EvidenceCards stacked />
+          </div>
+
+          <div className="lg:hidden -mt-10 sm:-mt-14 px-1 sm:px-6 relative z-10 flex flex-col gap-3">
+            <CommandCentre />
+            <EvidenceCards />
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
