@@ -1,11 +1,35 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { admin } from '@/config/agency';
+import { useEffect, useMemo, useState } from 'react';
+import { admin, mcp } from '@/config/agency';
 import type { Inquiry } from '@/lib/inquiries';
 import { MagneticDisc } from './MagneticDisc';
 import { RevealOnScroll } from './RevealOnScroll';
 import { RevealText } from './RevealText';
+
+function CopyBlock({ label, code }: { label: string; code: string }) {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <figure className="border-t border-obsidian/10 pt-8 first:border-t-0 first:pt-0">
+      <div className="flex items-baseline justify-between gap-4">
+        <figcaption className="text-[13px] uppercase tracking-[0.18em] text-slate">{label}</figcaption>
+        <button
+          type="button"
+          onClick={async () => {
+            await navigator.clipboard.writeText(code);
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1600);
+          }}
+          className="text-[13px] text-obsidian transition-colors hover:text-slate"
+        >
+          {copied ? 'Copied' : 'Copy'}
+        </button>
+      </div>
+      <pre className="mt-4 overflow-x-auto text-[13px] leading-[1.6] text-obsidian/85">{code}</pre>
+    </figure>
+  );
+}
 
 type Provider = {
   id: string;
@@ -33,7 +57,13 @@ export function AdminDashboard({
   endpoint: string;
 }) {
   const [items, setItems] = useState(inquiries);
+  const [origin, setOrigin] = useState('');
   const unread = useMemo(() => items.filter((item) => !item.read).length, [items]);
+  const mcpUrl = `${origin || 'https://your-domain'}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   const logout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
@@ -130,6 +160,93 @@ export function AdminDashboard({
               </ul>
             </RevealOnScroll>
           </div>
+        </div>
+      </section>
+
+      <section className="pb-20 sm:pb-28">
+        <div className="mx-auto max-w-editorial px-5 sm:px-8 lg:px-12">
+          <div className="grid gap-10 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-slate">{admin.mcp.eyebrow}</p>
+              <h2 className="mt-4 text-[32px] leading-[1.08] tracking-[-0.04em] sm:text-[40px]">{admin.mcp.heading}</h2>
+              <p className="mt-4 max-w-[42ch] text-[15px] leading-[1.6] text-slate">{admin.mcp.body}</p>
+              <p className="mt-4 text-[15px] text-slate">
+                Live endpoint <code className="text-obsidian">{mcpUrl}</code>
+              </p>
+            </div>
+            <ol className="relative lg:col-span-7">
+              <span aria-hidden="true" className="absolute left-0 top-0 hidden h-full w-px bg-obsidian/10 sm:block" />
+              {mcp.steps.map((step, index) => (
+                <li key={step.index} className="relative border-b border-obsidian/10 py-8 sm:pl-10">
+                  <span
+                    aria-hidden="true"
+                    className={`absolute left-0 top-[40px] hidden h-[9px] w-[9px] -translate-x-1/2 rounded-full sm:block ${
+                      index === 0 ? 'bg-signalYellow' : 'bg-obsidian/25'
+                    }`}
+                  />
+                  <div className="flex items-baseline gap-5">
+                    <span className="text-[12px] tabular-nums tracking-[0.18em] text-slate">{step.index}</span>
+                    <h3 className="text-[24px] leading-[1.1] tracking-[-0.04em] sm:text-[28px]">{step.title}</h3>
+                  </div>
+                  <p className="mt-3 max-w-[46ch] text-[15px] leading-[1.6] text-slate sm:ml-[52px]">{step.body}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <RevealOnScroll className="mt-16">
+            <ul>
+              {mcp.tools.map((tool) => (
+                <li
+                  key={tool.name}
+                  className="flex flex-col gap-2 border-b border-obsidian/10 py-5 first:border-t sm:flex-row sm:items-baseline sm:justify-between"
+                >
+                  <code className="text-[16px] tracking-[-0.03em]">{tool.name}</code>
+                  <span className="max-w-[36ch] text-[15px] text-slate sm:text-right">{tool.purpose}</span>
+                </li>
+              ))}
+            </ul>
+          </RevealOnScroll>
+
+          <RevealOnScroll className="mt-16">
+            <CopyBlock
+              label="Cursor"
+              code={`{
+  "mcpServers": {
+    "comlabs": {
+      "url": "${mcpUrl}"
+    }
+  }
+}`}
+            />
+            <CopyBlock
+              label="Claude Desktop"
+              code={`{
+  "mcpServers": {
+    "comlabs": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "${mcpUrl}"]
+    }
+  }
+}`}
+            />
+            <CopyBlock
+              label="ChatGPT"
+              code={mcpUrl}
+            />
+            <CopyBlock
+              label="Local stdio"
+              code={`{
+  "mcpServers": {
+    "comlabs": {
+      "command": "npx",
+      "args": ["tsx", "src/mcp/stdio.ts"],
+      "cwd": "./comlabs-site"
+    }
+  }
+}`}
+            />
+          </RevealOnScroll>
         </div>
       </section>
 

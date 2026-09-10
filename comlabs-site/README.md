@@ -18,8 +18,7 @@ layer, so you can rebrand the whole site without touching a component.
 | `/resources` | Resource index with a featured article, category sections and a help-centre grid |
 | `/resources/[slug]` | Full article route, statically generated from the content layer |
 | `/contact` | Human Made Logic contact form. Submissions are emailed with nodemailer and stored for the admin panel |
-| `/mcp` | ComLabs MCP server — connect Claude, ChatGPT, Cursor and Gemini |
-| `/admin` | Password-protected studio panel for enquiries and provider status |
+| `/admin` | Password-protected studio panel: enquiries, provider status, and how to use MCP |
 | `/privacy` | Placeholder privacy policy with an in-page contents rail |
 | `/terms` | Placeholder terms, including template licence notes |
 | `404` | Custom not-found page |

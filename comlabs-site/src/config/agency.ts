@@ -16,7 +16,6 @@ export const agency = {
     { label: 'Work', href: '/#work' },
     { label: 'Services', href: '/#capabilities' },
     { label: 'Studio', href: '/#studio' },
-    { label: 'MCP', href: '/mcp' },
     { label: 'Contact', href: '/contact' },
   ] as NavLink[],
   cta: { label: 'Start a project', href: '/contact' },
@@ -374,4 +373,9 @@ export const admin = {
   body: 'Messages from the contact form and from connected clients. Provider keys stay on the server.',
   loginHeading: 'Studio access',
   loginBody: 'Enter the admin password to read enquiries and check which models are connected.',
+  mcp: {
+    eyebrow: '/ How to use MCP',
+    heading: 'Connect Claude, GPT and Cursor to the studio.',
+    body: 'The server lives at /api/mcp. Point an MCP client at that URL, then call list_providers and ask.',
+  },
 };
