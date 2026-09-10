@@ -63,6 +63,8 @@ export type Grade = {
   lift: number;
   /** Warm bias applied in the highlights only. */
   warmth: number;
+  /** Overall multiplier. Below 1 sinks the frame towards black. */
+  brightness: number;
 };
 
 export type Crop = {
@@ -99,15 +101,15 @@ export type MediaAsset = {
 
 /* Grading presets — one family so eight different photographs read as one
    universe: lowered saturation, deeper blacks, restrained highlights. */
-const EDITORIAL: Grade = { saturation: 0.78, contrast: 1.1, lift: -0.035, warmth: 0.02 };
-const EDITORIAL_WARM: Grade = { saturation: 0.8, contrast: 1.12, lift: -0.04, warmth: 0.05 };
-const EDITORIAL_COOL: Grade = { saturation: 0.86, contrast: 1.14, lift: -0.05, warmth: -0.01 };
-const EDITORIAL_DEEP: Grade = { saturation: 0.7, contrast: 1.16, lift: -0.06, warmth: 0.015 };
+const EDITORIAL: Grade = { saturation: 0.78, contrast: 1.1, lift: -0.035, warmth: 0.02, brightness: 1 };
+const EDITORIAL_WARM: Grade = { saturation: 0.8, contrast: 1.12, lift: -0.04, warmth: 0.05, brightness: 1 };
+const EDITORIAL_COOL: Grade = { saturation: 0.86, contrast: 1.14, lift: -0.05, warmth: -0.01, brightness: 1 };
+const EDITORIAL_DEEP: Grade = { saturation: 0.7, contrast: 1.16, lift: -0.06, warmth: 0.015, brightness: 1 };
 
 
 /* Neutral grade for the hero studies. These are HML's own artwork rather
    than sourced photography, so they are shown as authored. */
-const AUTHORED: Grade = { saturation: 1, contrast: 1, lift: 0, warmth: 0 };
+const AUTHORED: Grade = { saturation: 1, contrast: 1, lift: 0, warmth: 0, brightness: 1 };
 
 /**
  * The hero fan. Five studies, each a distinct discipline, treated with the
@@ -146,7 +148,46 @@ const PANEL_TREATMENT: Treatment = {
   damping: 7,
 };
 
+/*
+ * The backdrop field. The hero studies, washed out and softened until they
+ * read as one painterly ground rather than four separate cards. This is the
+ * layer the shader plays across, behind the scenic photography.
+ */
+const BACKDROP_GRADE: Grade = {
+  saturation: 0.38,
+  contrast: 0.8,
+  lift: 0.07,
+  warmth: 0.03,
+  brightness: 1.08,
+};
+
+const BACKDROP_TREATMENT: Treatment = {
+  mode: 'refract',
+  grade: BACKDROP_GRADE,
+  displacement: 1,
+  pointerInfluence: 1.6,
+  scrollInfluence: 0.8,
+  chromatic: 0.9,
+  damping: 6,
+};
+
+const backdropPanel = (id: string, file: string): MediaAsset => ({
+  id: `stage-${id}`,
+  src: `/images/hml/${file}.png`,
+  alt: '',
+  desktop: { aspect: '1 / 1', position: '50% 50%' },
+  mobile: { aspect: '1 / 1', position: '50% 50%' },
+  radius: 0,
+  treatment: BACKDROP_TREATMENT,
+});
+
 export const media = {
+  /* Backdrop field — four hero studies softened into one shader-driven ground. */
+  stageFieldOne: backdropPanel('one', 'hero-identity'),
+  stageFieldTwo: backdropPanel('two', 'hero-artdirection'),
+  stageFieldThree: backdropPanel('three', 'hero-campaign'),
+  stageFieldFour: backdropPanel('four', 'hero-culture'),
+
   /* ---------------------------------------------------------------- hero */
 
   heroIdentity: heroStudy(
@@ -190,9 +231,9 @@ export const media = {
     id: 'process-monument',
     src: ARCHITECTURE_PRIMARY,
     alt: 'Monumental concrete architecture, cropped so the structure falls away into deep shadow',
-    desktop: { aspect: '16 / 10', position: '40% 44%' },
+    desktop: { aspect: '16 / 11', position: '40% 44%' },
     mobile: { aspect: '4 / 3', position: '44% 44%' },
-    radius: 16,
+    radius: 12,
     treatment: PANEL_TREATMENT,
   },
 
@@ -214,7 +255,7 @@ export const media = {
     alt: '',
     desktop: { aspect: '3 / 5', position: '52% 38%' },
     mobile: { aspect: '3 / 4', position: '50% 40%' },
-    radius: 16,
+    radius: 12,
     treatment: PANEL_TREATMENT,
   },
 
@@ -228,9 +269,9 @@ export const media = {
     id: 'belief-dunes',
     src: DUNES,
     alt: 'Aerial dunes cropped until the ridgelines read as folded fabric',
-    desktop: { aspect: '32 / 9', position: '50% 52%' },
-    mobile: { aspect: '4 / 5', position: '58% 50%' },
-    radius: 2,
+    desktop: { aspect: '16 / 10', position: '50% 52%' },
+    mobile: { aspect: '4 / 3', position: '54% 50%' },
+    radius: 12,
     treatment: {
       mode: 'material',
       grade: EDITORIAL_WARM,

@@ -46,6 +46,7 @@ export const fragmentShader = /* glsl */ `
   uniform float uReady;
   uniform float uOpacity;
 
+  uniform float uBrightness;
   uniform float uSaturation;
   uniform float uContrast;
   uniform float uLift;
@@ -182,6 +183,7 @@ export const fragmentShader = /* glsl */ `
     colour = (colour - 0.5) * uContrast + 0.5;
     colour += uLift * (1.0 - luma);
     colour += vec3(uWarmth, uWarmth * 0.35, -uWarmth * 0.55) * smoothstep(0.35, 1.0, luma);
+    colour *= uBrightness;
     colour = mix(colour, vec3(luma), clamp(uGray, 0.0, 1.0));
 
     // Fine grain keeps the surface printed rather than plastic.
