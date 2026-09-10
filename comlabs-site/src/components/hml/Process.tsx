@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { process } from '@/config/agency';
+import { media } from '@/config/media';
 import { useReducedMotion } from '@/lib/hml/useReducedMotion';
 import { RevealText } from './RevealText';
+import { ShaderImage } from './ShaderImage';
 
 export function Process() {
   const section = useRef<HTMLElement>(null);
@@ -53,7 +55,57 @@ export function Process() {
   }, [reducedMotion]);
 
   return (
-    <section ref={section} className="py-24 sm:py-32 lg:py-40">
+    <section ref={section} className="overflow-x-clip py-24 sm:py-32 lg:py-40">
+      {/*
+        Architectural interlude. Structure, order and load-bearing geometry —
+        the visual argument for "clear thinking before decoration". The plate
+        runs past the right edge; two counterpoints rise above and drop below
+        its baseline, so the cluster never reads as a boxed illustration.
+      */}
+      <div className="mx-auto mb-20 max-w-editorial px-5 sm:mb-24 sm:px-8 lg:mb-32 lg:px-12">
+        <div className="relative">
+          <div className="-mx-5 sm:-mx-8 md:mx-0">
+            <div className="relative md:ml-[22%] md:mr-[-8vw]">
+              <ShaderImage
+                id={media.monument.id}
+                asset={media.monument}
+                sizes="(max-width: 768px) 100vw, 72vw"
+                className="w-full"
+              />
+              {/* The left edge sinks into paper rather than stopping at a line. */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-[22%] md:block"
+                style={{
+                  background:
+                    'linear-gradient(to right, rgba(242,240,235,1) 0%, rgba(242,240,235,0.6) 42%, rgba(242,240,235,0) 100%)',
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="mt-4 flex items-start gap-3 md:contents">
+            <div className="w-[44%] -translate-y-8 md:absolute md:left-0 md:top-[-10%] md:w-[18%] md:translate-y-0">
+              <ShaderImage
+                id={media.pillar.id}
+                asset={media.pillar}
+                sizes="(max-width: 768px) 44vw, 19vw"
+                className="w-full"
+              />
+            </div>
+
+            <div className="w-[36%] translate-y-4 md:absolute md:bottom-[-14%] md:left-[12%] md:w-[14%] md:translate-y-0">
+              <ShaderImage
+                id={media.aperture.id}
+                asset={media.aperture}
+                sizes="(max-width: 768px) 36vw, 15vw"
+                className="w-full"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="mx-auto max-w-editorial px-5 sm:px-8 lg:px-12">
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
