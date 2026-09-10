@@ -9,19 +9,20 @@ export const agency = {
   name: 'Human Made Logic',
   shortName: 'HML',
   principle: 'Human instinct. Creative systems. Measurable growth.',
-  email: 'hello@humanmadelogic.com',
+  email: 'kuntal@humanmadelogic.fun',
   location: 'Working worldwide',
   availability: 'Taking projects for Q3',
   nav: [
-    { label: 'Work', href: '#work' },
-    { label: 'Services', href: '#capabilities' },
-    { label: 'Studio', href: '#studio' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Work', href: '/#work' },
+    { label: 'Services', href: '/#capabilities' },
+    { label: 'Studio', href: '/#studio' },
+    { label: 'MCP', href: '/mcp' },
+    { label: 'Contact', href: '/contact' },
   ] as NavLink[],
-  cta: { label: 'Start a project', href: '#contact' },
+  cta: { label: 'Start a project', href: '/contact' },
   social: [
-    { label: 'Instagram', href: '#contact' },
-    { label: 'LinkedIn', href: '#contact' },
+    { label: 'Instagram', href: '/contact' },
+    { label: 'LinkedIn', href: '/contact' },
   ] as NavLink[],
 } as const;
 
@@ -44,8 +45,8 @@ export const hero = {
   eyebrow: 'Independent creative partner · Strategy to scale',
   headline: ['We make brands', 'impossible to ignore.'],
   body: 'Human Made Logic is a marketing and design agency building identities, digital experiences and campaigns that turn attention into measurable growth.',
-  primaryCta: { label: 'Start a project', href: '#contact' },
-  secondaryCta: { label: 'Explore our work', href: '#work' },
+  primaryCta: { label: 'Start a project', href: '/contact' },
+  secondaryCta: { label: 'Explore our work', href: '/#work' },
   scrollHint: 'Scroll',
   frames: [
     {
@@ -294,5 +295,83 @@ export const testimonial = {
 export const finalCta = {
   heading: 'Have something worth noticing?',
   body: 'Tell us what you are building, changing or trying to make impossible to ignore.',
-  cta: { label: 'Start a project', href: `mailto:${agency.email}` },
+  cta: { label: 'Start a project', href: '/contact' },
+};
+
+/* -------------------------------------------------------------- contact */
+
+export const contact = {
+  eyebrow: '/ Start a project',
+  heading: ['Tell us what you', 'are building.'],
+  body: 'A short note is enough. We read every enquiry ourselves, and we reply within one working day.',
+  successTitle: 'Message received.',
+  successBody: 'Thank you. We will write back to the address you gave us, usually within one working day.',
+  topics: ['New project', 'Retainer', 'MCP access', 'Collaboration', 'Something else'],
+  details: [
+    { label: 'Email', value: 'kuntal@humanmadelogic.fun' },
+    { label: 'Studio', value: 'Working worldwide' },
+    { label: 'Availability', value: 'Taking projects for Q3' },
+    { label: 'Response', value: 'One working day' },
+  ],
+};
+
+/* ------------------------------------------------------------------- mcp */
+
+export const mcp = {
+  eyebrow: '/ ComLabs MCP',
+  heading: ['One server.', 'Claude, GPT, Gemini.'],
+  body: 'The ComLabs MCP server is how Claude, ChatGPT, Cursor and other MCP clients talk to the studio — and to the models behind them.',
+  clients: ['Claude', 'ChatGPT', 'Cursor', 'Gemini', 'Windsurf', 'VS Code'],
+  providers: [
+    {
+      id: 'claude',
+      title: 'Claude',
+      body: 'Anthropic models through the Messages API. Set ANTHROPIC_API_KEY and ask from any connected client.',
+    },
+    {
+      id: 'gpt',
+      title: 'GPT',
+      body: 'OpenAI chat models through the Completions API. Set OPENAI_API_KEY to route prompts to GPT.',
+    },
+    {
+      id: 'gemini',
+      title: 'Gemini',
+      body: 'Google generative models. Set GOOGLE_API_KEY and the same ask tool will send the prompt to Gemini.',
+    },
+  ],
+  steps: [
+    {
+      index: '01',
+      title: 'Connect a client',
+      body: 'Point Claude Desktop, Cursor, ChatGPT or any MCP host at /api/mcp — or run the stdio server locally.',
+    },
+    {
+      index: '02',
+      title: 'Choose a model',
+      body: 'Call list_providers, then ask with provider set to claude, gpt or gemini. Only configured keys are live.',
+    },
+    {
+      index: '03',
+      title: 'Use the studio',
+      body: 'Read capabilities and selected work as resources, or submit an enquiry that lands in the same inbox as the contact form.',
+    },
+  ],
+  tools: [
+    { name: 'studio_profile', purpose: 'Who we are, where we work, how to reach us' },
+    { name: 'list_capabilities', purpose: 'The six studio disciplines' },
+    { name: 'list_work', purpose: 'Selected projects and results' },
+    { name: 'list_providers', purpose: 'Which model backends are configured' },
+    { name: 'ask', purpose: 'Send a prompt to Claude, GPT or Gemini' },
+    { name: 'submit_inquiry', purpose: 'The same intake as the contact page' },
+  ],
+};
+
+/* ----------------------------------------------------------------- admin */
+
+export const admin = {
+  eyebrow: '/ Studio',
+  heading: ['Enquiries and', 'the MCP server.'],
+  body: 'Messages from the contact form and from connected clients. Provider keys stay on the server.',
+  loginHeading: 'Studio access',
+  loginBody: 'Enter the admin password to read enquiries and check which models are connected.',
 };

@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverComponentsExternalPackages: [
+      '@modelcontextprotocol/server',
+      '@modelcontextprotocol/core',
+      'mcp-handler',
+      'nodemailer',
+    ],
+  },
   images: {
     remotePatterns: [
       {
