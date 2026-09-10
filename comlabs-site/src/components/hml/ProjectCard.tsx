@@ -5,7 +5,7 @@ import type { Project } from '@/config/agency';
 import { media } from '@/config/media';
 import { useFinePointer } from '@/lib/hml/useMediaQuery';
 import { useReducedMotion } from '@/lib/hml/useReducedMotion';
-import { ShaderImage } from './ShaderImage';
+import { ScenicStage, StageWindow } from './ScenicStage';
 
 /**
  * Four deliberately different compositions rather than four cards.
@@ -21,24 +21,32 @@ const LAYOUTS = {
     frame: 'lg:col-span-8 lg:col-start-5 lg:-mr-[7vw]',
     body: 'lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:pb-6',
     sizes: '(max-width: 1024px) 100vw, 62vw',
+    stageAspect: 'aspect-[4/3] sm:aspect-[16/10]',
+    window: 'left-[6%] top-[8%] w-[80%]',
   },
   'offset-right': {
     root: 'lg:grid lg:grid-cols-12 lg:items-center lg:gap-x-8',
     frame: 'lg:col-span-5 lg:col-start-8',
     body: 'lg:col-span-5 lg:col-start-1 lg:row-start-1',
     sizes: '(max-width: 1024px) 100vw, 42vw',
+    stageAspect: 'aspect-[4/3] sm:aspect-[5/4]',
+    window: 'right-[6%] top-[10%] w-[80%]',
   },
   'offset-left': {
     root: 'lg:grid lg:grid-cols-12 lg:items-center lg:gap-x-8',
     frame: 'lg:col-span-7 lg:col-start-1 lg:-ml-[7vw]',
     body: 'lg:col-span-4 lg:col-start-9',
     sizes: '(max-width: 1024px) 100vw, 58vw',
+    stageAspect: 'aspect-[4/3] sm:aspect-[5/4]',
+    window: 'bottom-[9%] left-[6%] w-[80%]',
   },
   panorama: {
     root: '',
     frame: 'lg:-mx-[7vw]',
     body: 'lg:grid lg:grid-cols-12 lg:items-end lg:gap-x-8',
     sizes: '100vw',
+    stageAspect: 'aspect-[16/10] sm:aspect-[21/9]',
+    window: 'left-[4%] top-[9%] w-[72%] md:w-[64%]',
   },
 } as const;
 
@@ -106,27 +114,33 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
   return (
     <article data-project className={layout.root}>
       <div className={layout.frame}>
-        <ShaderImage
-          id={`work-${project.id}`}
-          asset={asset}
-          onFrame={registerFrame}
-          sizes={layout.sizes}
-          restGrayscale={0.2}
-          className="w-full"
-        >
-          {/* Decorative pointer label. The card is not a link, so nothing
-              here promises a case-study page that does not exist. */}
-          <span
-            ref={label}
-            aria-hidden="true"
-            className="pointer-events-none absolute left-0 top-0 z-20 hidden h-[96px] w-[96px] items-center justify-center rounded-full bg-signalYellow text-center text-[11px] uppercase leading-[1.25] tracking-[0.12em] text-obsidian opacity-0 transition-opacity duration-300 lg:flex"
-            style={{ transform: 'translate3d(-200px, -200px, 0) scale(0.72)' }}
+        {/* Every project photograph sits on its own shader field, inset so the
+            ground reads around it — the same stage language as the belief
+            section, at a single-window scale. */}
+        <ScenicStage id={`work-${project.id}`} aspect={layout.stageAspect} wash={0.34}>
+          <StageWindow
+            id={`work-${project.id}`}
+            asset={asset}
+            layer={20}
+            onFrame={registerFrame}
+            sizes={layout.sizes}
+            restGrayscale={0.2}
+            className={layout.window}
           >
-            View
-            <br />
-            project
-          </span>
-        </ShaderImage>
+            {/* Decorative pointer label. The card is not a link, so nothing
+                here promises a case-study page that does not exist. */}
+            <span
+              ref={label}
+              aria-hidden="true"
+              className="pointer-events-none absolute left-0 top-0 z-20 hidden h-[96px] w-[96px] items-center justify-center rounded-full bg-signalYellow text-center text-[11px] uppercase leading-[1.25] tracking-[0.12em] text-obsidian opacity-0 transition-opacity duration-300 lg:flex"
+              style={{ transform: 'translate3d(-200px, -200px, 0) scale(0.72)' }}
+            >
+              View
+              <br />
+              project
+            </span>
+          </StageWindow>
+        </ScenicStage>
       </div>
 
       <div className={`${layout.body} mt-7 lg:mt-0`} data-project-body>

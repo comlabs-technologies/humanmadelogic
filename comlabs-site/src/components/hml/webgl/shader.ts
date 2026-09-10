@@ -111,7 +111,7 @@ export const fragmentShader = /* glsl */ `
       shift += vec2(slow, slow * 0.45) * 0.010 * amount;
       shift += (uPointer * 0.012 * uPointerInfluence) * (0.35 + uHover * 0.65);
       shift += normalize(toPointer + vec2(0.0001)) * pointerField
-             * (0.006 + uHover * 0.020)
+             * (0.008 + uHover * 0.026)
              * amount * uPointerInfluence * (0.3 + uVelocity * 0.7);
       shift.y += uScroll * 0.006 * uScrollInfluence;
       chroma = uChromatic * uVelocity * (0.25 + uHover * 0.75) * 0.0022;

@@ -50,7 +50,7 @@ export function usePointerVelocity(enabled = true) {
         const dt = Math.max(16, now - lastTime);
         const speed = Math.hypot(event.clientX - lastX, event.clientY - lastY) / dt;
         // Ease towards the new speed so one fast flick does not spike the shaders.
-        state.velocity += (Math.min(1, speed * 0.4) - state.velocity) * 0.25;
+        state.velocity += (Math.min(1, speed * 0.55) - state.velocity) * 0.4;
       }
 
       state.x = event.clientX;
@@ -73,7 +73,7 @@ export function usePointerVelocity(enabled = true) {
 
     // Velocity has to decay even when the pointer stops emitting events.
     const decay = window.setInterval(() => {
-      state.velocity *= 0.85;
+      state.velocity *= 0.78;
       if (state.velocity < 0.001) state.velocity = 0;
     }, 100);
 

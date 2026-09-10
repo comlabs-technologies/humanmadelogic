@@ -127,10 +127,10 @@ const heroStudy = (id: string, file: string, alt: string): MediaAsset => ({
     mode: 'refract',
     grade: AUTHORED,
     displacement: 1,
-    pointerInfluence: 1.35,
+    pointerInfluence: 1.82,
     scrollInfluence: 0.6,
     chromatic: 1,
-    damping: 7,
+    damping: 11.5,
   },
 });
 
@@ -142,10 +142,10 @@ const PANEL_TREATMENT: Treatment = {
   mode: 'refract',
   grade: EDITORIAL,
   displacement: 1,
-  pointerInfluence: 1.35,
+  pointerInfluence: 1.82,
   scrollInfluence: 0.55,
   chromatic: 1,
-  damping: 7,
+  damping: 11.5,
 };
 
 /*
@@ -165,10 +165,10 @@ const BACKDROP_TREATMENT: Treatment = {
   mode: 'refract',
   grade: BACKDROP_GRADE,
   displacement: 1,
-  pointerInfluence: 1.6,
+  pointerInfluence: 2.16,
   scrollInfluence: 0.8,
   chromatic: 0.9,
-  damping: 6,
+  damping: 9.9,
 };
 
 const backdropPanel = (id: string, file: string): MediaAsset => ({
@@ -276,10 +276,10 @@ export const media = {
       mode: 'material',
       grade: EDITORIAL_WARM,
       displacement: 0.55,
-      pointerInfluence: 0.3,
+      pointerInfluence: 0.41,
       scrollInfluence: 1.15,
       chromatic: 0,
-      damping: 3.2,
+      damping: 5.3,
     },
   },
 
@@ -297,10 +297,10 @@ export const media = {
       mode: 'optical',
       grade: EDITORIAL_COOL,
       displacement: 0.85,
-      pointerInfluence: 1.35,
+      pointerInfluence: 1.82,
       scrollInfluence: 0.25,
       chromatic: 1.1,
-      damping: 6.5,
+      damping: 10.7,
     },
   },
 
@@ -316,10 +316,10 @@ export const media = {
       mode: 'kinetic',
       grade: EDITORIAL,
       displacement: 0.7,
-      pointerInfluence: 0.2,
+      pointerInfluence: 0.27,
       scrollInfluence: 1.5,
       chromatic: 0.35,
-      damping: 4,
+      damping: 6.6,
     },
   },
 
@@ -335,10 +335,10 @@ export const media = {
       mode: 'current',
       grade: EDITORIAL_COOL,
       displacement: 0.75,
-      pointerInfluence: 1.15,
+      pointerInfluence: 1.55,
       scrollInfluence: 0.7,
       chromatic: 0.9,
-      damping: 4.5,
+      damping: 7.4,
     },
   },
 
@@ -354,10 +354,10 @@ export const media = {
       mode: 'material',
       grade: EDITORIAL_WARM,
       displacement: 0.5,
-      pointerInfluence: 0.45,
+      pointerInfluence: 0.61,
       scrollInfluence: 1,
       chromatic: 0,
-      damping: 3.6,
+      damping: 5.9,
     },
   },
 } satisfies Record<string, MediaAsset>;
