@@ -4,10 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { process } from '@/config/agency';
-import { media } from '@/config/media';
 import { useReducedMotion } from '@/lib/hml/useReducedMotion';
 import { RevealText } from './RevealText';
-import { ShaderImage } from './ShaderImage';
+import { ScenicStage } from './ScenicStage';
 
 export function Process() {
   const section = useRef<HTMLElement>(null);
@@ -57,44 +56,12 @@ export function Process() {
   return (
     <section ref={section} className="overflow-x-clip py-24 sm:py-32 lg:py-40">
       {/*
-        Architectural interlude, composed as a stack of overlapping panels:
-        a primary plate, a second crossing its lower-right corner, and a
-        narrow third tucked behind at the right edge. Shadows sit on the
-        wrappers rather than the frames, so the depth survives once the shader
-        takes the images over.
+        The scenic stage: a shader-driven backdrop built from the hero studies,
+        with the architectural photography laid over it as overlapping windows
+        sunk towards black.
       */}
       <div className="mx-auto mb-20 max-w-editorial px-5 sm:mb-24 sm:px-8 lg:mb-32 lg:px-12">
-        <div className="relative pb-16 sm:pb-20 lg:pb-24">
-          {/* Narrow panel, furthest back. */}
-          <div className="absolute right-0 top-[6%] z-0 hidden w-[17%] rounded-[16px] shadow-[0_30px_70px_-34px_rgba(21,21,21,0.55)] md:block lg:w-[15%]">
-            <ShaderImage
-              id={media.pillar.id}
-              asset={media.pillar}
-              sizes="17vw"
-              className="w-full"
-            />
-          </div>
-
-          {/* Primary plate. */}
-          <div className="relative z-10 w-full rounded-[16px] shadow-[0_40px_90px_-40px_rgba(21,21,21,0.6)] md:w-[74%] lg:w-[70%]">
-            <ShaderImage
-              id={media.monument.id}
-              asset={media.monument}
-              sizes="(max-width: 768px) 100vw, 70vw"
-              className="w-full"
-            />
-          </div>
-
-          {/* Second panel, crossing the primary plate's lower-right corner. */}
-          <div className="relative z-20 -mt-10 ml-auto w-[68%] rounded-[16px] shadow-[0_36px_80px_-34px_rgba(21,21,21,0.55)] sm:-mt-14 sm:w-[58%] md:absolute md:bottom-0 md:right-[6%] md:mt-0 md:w-[44%] lg:w-[40%]">
-            <ShaderImage
-              id={media.aperture.id}
-              asset={media.aperture}
-              sizes="(max-width: 768px) 68vw, 44vw"
-              className="w-full"
-            />
-          </div>
-        </div>
+        <ScenicStage />
       </div>
 
       <div className="mx-auto max-w-editorial px-5 sm:px-8 lg:px-12">

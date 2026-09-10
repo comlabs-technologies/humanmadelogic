@@ -63,6 +63,8 @@ export type Grade = {
   lift: number;
   /** Warm bias applied in the highlights only. */
   warmth: number;
+  /** Overall multiplier. Below 1 sinks the frame towards black. */
+  brightness: number;
 };
 
 export type Crop = {
@@ -99,15 +101,15 @@ export type MediaAsset = {
 
 /* Grading presets — one family so eight different photographs read as one
    universe: lowered saturation, deeper blacks, restrained highlights. */
-const EDITORIAL: Grade = { saturation: 0.78, contrast: 1.1, lift: -0.035, warmth: 0.02 };
-const EDITORIAL_WARM: Grade = { saturation: 0.8, contrast: 1.12, lift: -0.04, warmth: 0.05 };
-const EDITORIAL_COOL: Grade = { saturation: 0.86, contrast: 1.14, lift: -0.05, warmth: -0.01 };
-const EDITORIAL_DEEP: Grade = { saturation: 0.7, contrast: 1.16, lift: -0.06, warmth: 0.015 };
+const EDITORIAL: Grade = { saturation: 0.78, contrast: 1.1, lift: -0.035, warmth: 0.02, brightness: 1 };
+const EDITORIAL_WARM: Grade = { saturation: 0.8, contrast: 1.12, lift: -0.04, warmth: 0.05, brightness: 1 };
+const EDITORIAL_COOL: Grade = { saturation: 0.86, contrast: 1.14, lift: -0.05, warmth: -0.01, brightness: 1 };
+const EDITORIAL_DEEP: Grade = { saturation: 0.7, contrast: 1.16, lift: -0.06, warmth: 0.015, brightness: 1 };
 
 
 /* Neutral grade for the hero studies. These are HML's own artwork rather
    than sourced photography, so they are shown as authored. */
-const AUTHORED: Grade = { saturation: 1, contrast: 1, lift: 0, warmth: 0 };
+const AUTHORED: Grade = { saturation: 1, contrast: 1, lift: 0, warmth: 0, brightness: 1 };
 
 /**
  * The hero fan. Five studies, each a distinct discipline, treated with the
@@ -132,19 +134,64 @@ const heroStudy = (id: string, file: string, alt: string): MediaAsset => ({
   },
 });
 
+
 /*
- * Shared treatment for the three architectural panels: the original V1 hover
- * feel — strong cursor-driven refraction that settles once the pointer leaves.
+ * The scenic stage.
+ *
+ * Backdrop — the hero studies, washed out and softened until they read as one
+ * painterly field rather than four separate cards. This is the layer the
+ * shader plays across.
+ *
+ * Window — the architectural photography crushed towards black, so the
+ * structure survives only as edge and shadow. These sit over the backdrop as
+ * overlapping panels.
  */
-const PANEL_TREATMENT: Treatment = {
+const BACKDROP_GRADE: Grade = {
+  saturation: 0.42,
+  contrast: 0.82,
+  lift: 0.06,
+  warmth: 0.03,
+  brightness: 1.06,
+};
+
+const WINDOW_GRADE: Grade = {
+  saturation: 0.3,
+  contrast: 1.34,
+  lift: -0.07,
+  warmth: 0.01,
+  brightness: 0.42,
+};
+
+const BACKDROP_TREATMENT: Treatment = {
   mode: 'refract',
-  grade: EDITORIAL,
+  grade: BACKDROP_GRADE,
+  displacement: 0.9,
+  pointerInfluence: 1.5,
+  scrollInfluence: 0.7,
+  chromatic: 0.8,
+  damping: 6,
+};
+
+const WINDOW_TREATMENT: Treatment = {
+  mode: 'refract',
+  grade: WINDOW_GRADE,
   displacement: 1,
   pointerInfluence: 1.35,
-  scrollInfluence: 0.55,
+  scrollInfluence: 0.5,
   chromatic: 1,
   damping: 7,
 };
+
+/** One panel of the backdrop field. Square-ish, hard-edged, no radius. */
+const backdropPanel = (id: string, file: string): MediaAsset => ({
+  id: `stage-${id}`,
+  src: `/images/hml/${file}.png`,
+  alt: '',
+  desktop: { aspect: '1 / 1', position: '50% 50%' },
+  mobile: { aspect: '1 / 1', position: '50% 50%' },
+  radius: 0,
+  treatment: BACKDROP_TREATMENT,
+});
 
 export const media = {
   /* ---------------------------------------------------------------- hero */
@@ -175,47 +222,47 @@ export const media = {
     'Culture study: soft black forms against a warm yellow field',
   ),
 
-  /* -------------------------------------------------------- architecture */
+  /* --------------------------------------------------------- the stage */
 
-  /*
-   * A stack of three overlapping panels rather than a scattered cluster: one
-   * large plate, a second crossing its lower-right corner, and a narrow third
-   * sitting behind them at the right. All three carry the original V1 hover
-   * treatment — strong cursor-driven refraction that settles when the pointer
-   * leaves — so the movement matches the hero fan rather than the subdued
-   * treatment used for the full-bleed photographic bands.
-   */
-  /** The primary panel. */
+  /* Backdrop field — four hero studies, softened into one painterly ground. */
+  stageFieldOne: backdropPanel('one', 'hero-identity'),
+  stageFieldTwo: backdropPanel('two', 'hero-artdirection'),
+  stageFieldThree: backdropPanel('three', 'hero-campaign'),
+  stageFieldFour: backdropPanel('four', 'hero-culture'),
+
+  /* Windows — architecture sunk towards black, laid over the backdrop. */
+
+  /** The primary window. */
   monument: {
-    id: 'process-monument',
+    id: 'stage-monument',
     src: ARCHITECTURE_PRIMARY,
-    alt: 'Monumental concrete architecture, cropped so the structure falls away into deep shadow',
+    alt: 'Monumental concrete architecture sunk into deep shadow',
     desktop: { aspect: '16 / 10', position: '40% 44%' },
     mobile: { aspect: '4 / 3', position: '44% 44%' },
-    radius: 16,
-    treatment: PANEL_TREATMENT,
+    radius: 12,
+    treatment: WINDOW_TREATMENT,
   },
 
-  /** Crosses the lower-right corner of the primary panel. */
+  /** Crosses the lower-right corner of the primary window. */
   aperture: {
-    id: 'process-aperture',
+    id: 'stage-aperture',
     src: ARCHITECTURE_THIRD,
     alt: '',
     desktop: { aspect: '16 / 11', position: '52% 48%' },
     mobile: { aspect: '4 / 3', position: '52% 46%' },
-    radius: 16,
-    treatment: PANEL_TREATMENT,
+    radius: 12,
+    treatment: WINDOW_TREATMENT,
   },
 
-  /** Narrow panel tucked behind the stack, visible at the right edge. */
+  /** Narrow window tucked behind the stack at the right edge. */
   pillar: {
-    id: 'process-pillar',
+    id: 'stage-pillar',
     src: ARCHITECTURE_SECOND,
     alt: '',
     desktop: { aspect: '3 / 5', position: '52% 38%' },
     mobile: { aspect: '3 / 4', position: '50% 40%' },
-    radius: 16,
-    treatment: PANEL_TREATMENT,
+    radius: 12,
+    treatment: WINDOW_TREATMENT,
   },
 
   /* ----------------------------------------------------------- statement */

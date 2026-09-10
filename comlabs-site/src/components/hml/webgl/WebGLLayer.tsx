@@ -116,6 +116,7 @@ function Surfaces({ reducedMotion }: { reducedMotion: boolean }) {
           uReady: { value: 0 },
           uOpacity: { value: 1 },
 
+          uBrightness: { value: treatment.grade.brightness },
           uSaturation: { value: treatment.grade.saturation },
           uContrast: { value: treatment.grade.contrast },
           uLift: { value: treatment.grade.lift },
@@ -125,6 +126,7 @@ function Surfaces({ reducedMotion }: { reducedMotion: boolean }) {
       });
 
       const mesh = new THREE.Mesh(GEOMETRY, material);
+      mesh.renderOrder = surface.layer ?? 0;
       mesh.frustumCulled = false;
       mesh.matrixAutoUpdate = false;
       scene.add(mesh);
