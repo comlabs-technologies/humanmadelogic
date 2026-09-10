@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import type { Inquiry } from './inquiries';
 
-export const CONTACT_TO = process.env.CONTACT_TO || 'kuntal@humanmadelogic.fun';
+export const CONTACT_TO = process.env.CONTACT_TO || 'info@humanmadelogic.fun';
 
 export function smtpConfigured() {
   return Boolean(process.env.SMTP_HOST);
