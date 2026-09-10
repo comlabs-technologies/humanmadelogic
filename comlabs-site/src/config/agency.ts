@@ -29,6 +29,18 @@ export const agency = {
 
 /* ------------------------------------------------------------------ hero */
 
+export type HeroFrame = {
+  /** Key into the art-direction manifest in `src/config/media.ts`. */
+  media: MediaKey;
+  discipline: string;
+  /** Vertical offset in % of the frame height — drives the alternating fan. */
+  offset: number;
+  /** Resting rotation in degrees. */
+  rotate: number;
+  /** Pointer-follow depth multiplier. Higher = moves further. */
+  depth: number;
+};
+
 export const hero = {
   eyebrow: 'Independent creative partner · Strategy to scale',
   headline: ['We make brands', 'impossible to ignore.'],
@@ -36,6 +48,13 @@ export const hero = {
   primaryCta: { label: 'Start a project', href: '/contact' },
   secondaryCta: { label: 'Explore our work', href: '/#work' },
   scrollHint: 'Scroll',
+  frames: [
+    { media: 'heroIdentity', discipline: 'Identity', offset: 4, rotate: -3.4, depth: 0.55 },
+    { media: 'heroArtDirection', discipline: 'Art direction', offset: -7, rotate: 2.1, depth: 0.9 },
+    { media: 'heroProduct', discipline: 'Product', offset: 2, rotate: -1.2, depth: 1.25 },
+    { media: 'heroCampaign', discipline: 'Campaign', offset: -9, rotate: 3.1, depth: 0.9 },
+    { media: 'heroCulture', discipline: 'Culture', offset: 6, rotate: -2.4, depth: 0.55 },
+  ] as HeroFrame[],
 };
 
 /* ------------------------------------------------------------- statement */

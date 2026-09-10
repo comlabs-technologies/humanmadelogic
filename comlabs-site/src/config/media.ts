@@ -104,15 +104,71 @@ const EDITORIAL_WARM: Grade = { saturation: 0.8, contrast: 1.12, lift: -0.04, wa
 const EDITORIAL_COOL: Grade = { saturation: 0.86, contrast: 1.14, lift: -0.05, warmth: -0.01 };
 const EDITORIAL_DEEP: Grade = { saturation: 0.7, contrast: 1.16, lift: -0.06, warmth: 0.015 };
 
+
+/* Neutral grade for the hero studies. These are HML's own artwork rather
+   than sourced photography, so they are shown as authored. */
+const AUTHORED: Grade = { saturation: 1, contrast: 1, lift: 0, warmth: 0 };
+
+/**
+ * The hero fan. Five studies, each a distinct discipline, treated with the
+ * original cursor-driven refraction rather than the editorial photographic
+ * grade used for the sourced imagery.
+ */
+const heroStudy = (id: string, file: string, alt: string): MediaAsset => ({
+  id: `hero-${id}`,
+  src: `/images/hml/${file}.png`,
+  alt,
+  desktop: { aspect: '3 / 4', position: '50% 50%' },
+  mobile: { aspect: '3 / 4', position: '50% 50%' },
+  radius: 16,
+  treatment: {
+    mode: 'refract',
+    grade: AUTHORED,
+    displacement: 1,
+    pointerInfluence: 1.35,
+    scrollInfluence: 0.6,
+    chromatic: 1,
+    damping: 7,
+  },
+});
+
 export const media = {
   /* ---------------------------------------------------------------- hero */
 
+  heroIdentity: heroStudy(
+    'identity',
+    'hero-identity',
+    'Typographic identity study: a black counter-form beside a yellow vertical bar',
+  ),
+  heroArtDirection: heroStudy(
+    'art-direction',
+    'hero-artdirection',
+    'Art direction study: warm light falling across a dark field',
+  ),
+  heroProduct: heroStudy(
+    'product',
+    'hero-product',
+    'Product design study: layered interface surfaces on a fine grid',
+  ),
+  heroCampaign: heroStudy(
+    'campaign',
+    'hero-campaign',
+    'Campaign study: a contact sheet of frames with one selected in yellow',
+  ),
+  heroCulture: heroStudy(
+    'culture',
+    'hero-culture',
+    'Culture study: soft black forms against a warm yellow field',
+  ),
+
+  /* -------------------------------------------------------- architecture */
+
   /**
-   * The monumental plate. A wide architectural crop that runs past the right
-   * edge of the grid, with the headline sitting above its upper-left corner.
+   * The monumental plate. Anchors the process section: a wide architectural
+   * crop that runs past the right edge of the grid.
    */
-  heroMonument: {
-    id: 'hero-monument',
+  monument: {
+    id: 'process-monument',
     src: ARCHITECTURE_PRIMARY,
     alt: 'Monumental concrete architecture, cropped so the structure falls away into deep shadow',
     desktop: { aspect: '21 / 9', position: '38% 42%' },
@@ -129,9 +185,9 @@ export const media = {
     },
   },
 
-  /** Narrow vertical counterpoint, offset above the monument. */
-  heroPillar: {
-    id: 'hero-pillar',
+  /** Narrow vertical counterpoint, rising above the monument. */
+  pillar: {
+    id: 'process-pillar',
     src: ARCHITECTURE_SECOND,
     alt: '',
     desktop: { aspect: '3 / 5', position: '50% 35%' },
@@ -149,8 +205,8 @@ export const media = {
   },
 
   /** Second counterpoint, dropped below the monument's baseline. */
-  heroAperture: {
-    id: 'hero-aperture',
+  aperture: {
+    id: 'process-aperture',
     src: ARCHITECTURE_THIRD,
     alt: '',
     desktop: { aspect: '4 / 5', position: '55% 48%' },
