@@ -1,50 +1,49 @@
 'use client';
 
-import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { statement } from '@/config/agency';
+import { media } from '@/config/media';
 import { useReducedMotion } from '@/lib/hml/useReducedMotion';
-import { setSurfaceGray, useWebGLSurface } from './webgl/registry';
+import { useIsomorphicLayoutEffect } from '@/lib/hml/useIsomorphicLayoutEffect';
+import { setSurfaceGray } from './webgl/registry';
+import { ShaderImage } from './ShaderImage';
 import { RevealText } from './RevealText';
 
+/**
+ * The belief statement. The dunes are cropped to a hard panorama and run past
+ * the right edge of the grid, so the ridgelines read as folded material rather
+ * than as a landscape photograph sitting in a box.
+ */
 export function AgencyStatement() {
-  const plate = useWebGLSurface<HTMLDivElement>('statement-plate', {
-    src: statement.image.src,
-    radius: 18,
-    distortion: 0.55,
-    restGrayscale: 1,
-    hoverZoom: 0.6,
-    scrollInfluence: 1.4,
-  });
   const section = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const element = section.current;
     if (!element || reducedMotion) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
     const context = gsap.context(() => {
-      // Grayscale lifts and the plate drifts as the section passes through.
+      // Colour arrives slowly as the band passes through the viewport.
       ScrollTrigger.create({
         trigger: element,
         start: 'top bottom',
         end: 'bottom top',
         onUpdate: (self) => {
-          setSurfaceGray('statement-plate', 1 - gsap.utils.clamp(0, 1, (self.progress - 0.2) * 2.1));
+          setSurfaceGray(media.belief.id, 1 - gsap.utils.clamp(0, 1, (self.progress - 0.18) * 2.4));
         },
       });
 
       gsap.fromTo(
-        '[data-statement-plate]',
-        { yPercent: 6 },
+        '[data-belief-plate]',
+        { yPercent: 5 },
         {
-          yPercent: -6,
+          yPercent: -5,
           ease: 'none',
-          scrollTrigger: { trigger: element, start: 'top bottom', end: 'bottom top', scrub: 0.6 },
+          scrollTrigger: { trigger: element, start: 'top bottom', end: 'bottom top', scrub: 0.7 },
         },
       );
     }, element);
@@ -53,7 +52,11 @@ export function AgencyStatement() {
   }, [reducedMotion]);
 
   return (
-    <section id="studio" ref={section} className="scroll-mt-24 py-24 sm:py-32 lg:py-40">
+    <section
+      id="studio"
+      ref={section}
+      className="scroll-mt-24 overflow-x-clip py-24 sm:py-32 lg:py-40"
+    >
       <div className="mx-auto max-w-editorial px-5 sm:px-8 lg:px-12">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
           <p className="text-[11px] uppercase tracking-[0.2em] text-slate lg:col-span-3">
@@ -65,25 +68,28 @@ export function AgencyStatement() {
               lines={statement.lines}
               className="text-[8vw] leading-[1.02] tracking-[-0.045em] sm:text-[5.4vw] lg:text-[4.2vw] xl:text-[62px]"
             />
-            <p className="mt-8 max-w-[52ch] text-[16px] leading-[1.6] text-slate sm:text-[17px] lg:ml-auto lg:mt-10 lg:max-w-[44ch]">
-              {statement.body}
-            </p>
           </div>
         </div>
+      </div>
 
-        <div data-statement-plate className="mt-16 sm:mt-20 lg:mt-24">
-          <div
-            ref={plate}
-            className="webgl-surface relative aspect-[16/9] w-full overflow-hidden rounded-[18px] bg-obsidian/5 sm:aspect-[21/9]"
-          >
-            <Image
-              src={statement.image.src}
-              alt={statement.image.alt}
-              fill
-              sizes="(max-width: 1024px) 100vw, 1560px"
-              className="object-cover"
-            />
-          </div>
+      {/* Panoramic band. Full-bleed left, past the grid on the right. */}
+      <div data-belief-plate className="mt-16 sm:mt-20 lg:mt-24">
+        <div className="md:ml-[8vw] md:-mr-[6vw]">
+          <ShaderImage
+            id={media.belief.id}
+            asset={media.belief}
+            sizes="(max-width: 768px) 100vw, 95vw"
+            className="w-full"
+          />
+        </div>
+      </div>
+
+      {/* Copy sits under the band, indented to the right of the grid. */}
+      <div className="mx-auto max-w-editorial px-5 sm:px-8 lg:px-12">
+        <div className="grid lg:grid-cols-12">
+          <p className="mt-10 max-w-[52ch] text-[16px] leading-[1.6] text-slate sm:text-[17px] lg:col-span-5 lg:col-start-7 lg:mt-12">
+            {statement.body}
+          </p>
         </div>
       </div>
     </section>
