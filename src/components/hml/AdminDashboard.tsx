@@ -241,7 +241,7 @@ export function AdminDashboard({
     "comlabs": {
       "command": "npx",
       "args": ["tsx", "src/mcp/stdio.ts"],
-      "cwd": "./comlabs-site"
+      "cwd": "."
     }
   }
 }`}
