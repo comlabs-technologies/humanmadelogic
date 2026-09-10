@@ -54,7 +54,7 @@ See `env.example`. Copy it to `.env.local`.
 
 Required for a live contact inbox:
 
-- `CONTACT_TO` — defaults to `kuntal@humanmadelogic.fun`
+- `CONTACT_TO` — defaults to `info@humanmadelogic.fun`
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` — nodemailer SMTP
 - `ADMIN_PASSWORD` — required to open `/admin`
 

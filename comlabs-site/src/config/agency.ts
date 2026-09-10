@@ -11,7 +11,7 @@ export const agency = {
   name: 'Human Made Logic',
   shortName: 'HML',
   principle: 'Human instinct. Creative systems. Measurable growth.',
-  email: 'kuntal@humanmadelogic.fun',
+  email: 'info@humanmadelogic.fun',
   location: 'Working worldwide',
   availability: 'Taking projects for Q3',
   nav: [
@@ -234,7 +234,7 @@ export const contact = {
   successBody: 'Thank you. We will write back to the address you gave us, usually within one working day.',
   topics: ['New project', 'Retainer', 'MCP access', 'Collaboration', 'Something else'],
   details: [
-    { label: 'Email', value: 'kuntal@humanmadelogic.fun' },
+    { label: 'Email', value: 'info@humanmadelogic.fun' },
     { label: 'Studio', value: 'Working worldwide' },
     { label: 'Availability', value: 'Taking projects for Q3' },
     { label: 'Response', value: 'One working day' },
