@@ -56,9 +56,10 @@ export function HomePage() {
     };
   }, []);
 
-  // Shaders are a desktop enhancement: on touch and reduced motion the same
-  // composition renders as ordinary DOM images.
-  const webgl = canRender3D && isDesktop && finePointer && !reducedMotion;
+  // Shaders are a desktop enhancement. On touch the composition renders as
+  // ordinary graded DOM images; under reduced motion the canvas still runs but
+  // every motion uniform is zeroed, so the imagery is treated yet stationary.
+  const webgl = canRender3D && isDesktop && finePointer;
 
   return (
     <SmoothScrollProvider>
@@ -70,7 +71,7 @@ export function HomePage() {
 
       {/* Paper backdrop → shared canvas → content. */}
       <div aria-hidden="true" className="fixed inset-0 z-0 bg-paper" />
-      {webgl && <WebGLLayer />}
+      {webgl && <WebGLLayer reducedMotion={reducedMotion} />}
 
       <main id="main" className="hml relative z-10">
         <Hero />

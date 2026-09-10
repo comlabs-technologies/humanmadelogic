@@ -3,6 +3,8 @@
  * Every string, capability, project and stat on the homepage lives here.
  */
 
+import type { MediaKey } from './media';
+
 export type NavLink = { label: string; href: string };
 
 export const agency = {
@@ -27,19 +29,6 @@ export const agency = {
 
 /* ------------------------------------------------------------------ hero */
 
-export type HeroFrame = {
-  id: string;
-  src: string;
-  alt: string;
-  discipline: string;
-  /** Vertical offset in % of the frame height — drives the alternating fan. */
-  offset: number;
-  /** Resting rotation in degrees. */
-  rotate: number;
-  /** Pointer-follow depth multiplier. Higher = moves further. */
-  depth: number;
-};
-
 export const hero = {
   eyebrow: 'Independent creative partner · Strategy to scale',
   headline: ['We make brands', 'impossible to ignore.'],
@@ -47,53 +36,6 @@ export const hero = {
   primaryCta: { label: 'Start a project', href: '/contact' },
   secondaryCta: { label: 'Explore our work', href: '/#work' },
   scrollHint: 'Scroll',
-  frames: [
-    {
-      id: 'identity',
-      src: '/images/hml/hero-identity.png',
-      alt: 'Typographic identity study: a black counter-form beside a yellow vertical bar',
-      discipline: 'Identity',
-      offset: 4,
-      rotate: -3.4,
-      depth: 0.55,
-    },
-    {
-      id: 'art-direction',
-      src: '/images/hml/hero-artdirection.png',
-      alt: 'Art direction study: warm light falling across a dark field',
-      discipline: 'Art direction',
-      offset: -7,
-      rotate: 2.1,
-      depth: 0.9,
-    },
-    {
-      id: 'product',
-      src: '/images/hml/hero-product.png',
-      alt: 'Product design study: layered interface surfaces on a fine grid',
-      discipline: 'Product',
-      offset: 2,
-      rotate: -1.2,
-      depth: 1.25,
-    },
-    {
-      id: 'campaign',
-      src: '/images/hml/hero-campaign.png',
-      alt: 'Campaign study: a contact sheet of frames with one selected in yellow',
-      discipline: 'Campaign',
-      offset: -9,
-      rotate: 3.1,
-      depth: 0.9,
-    },
-    {
-      id: 'culture',
-      src: '/images/hml/hero-culture.png',
-      alt: 'Culture study: soft black forms against a warm yellow field',
-      discipline: 'Culture',
-      offset: 6,
-      rotate: -2.4,
-      depth: 0.55,
-    },
-  ] as HeroFrame[],
 };
 
 /* ------------------------------------------------------------- statement */
@@ -102,10 +44,6 @@ export const statement = {
   label: '/ What we believe',
   lines: ['Good marketing earns attention.', 'Great design makes it meaningful.'],
   body: 'We connect brand thinking, visual craft and commercial strategy to create work people remember—and businesses can measure.',
-  image: {
-    src: '/images/hml/studio.png',
-    alt: 'The studio: light falling between structural piers across a working floor',
-  },
 };
 
 /* ---------------------------------------------------------- capabilities */
@@ -177,9 +115,10 @@ export type Project = {
   services: string[];
   result: string;
   year: string;
-  image: { src: string; alt: string };
-  /** Layout weight — alternates the composition down the page. */
-  layout: 'wide' | 'offset-right' | 'offset-left';
+  /** Key into the art-direction manifest in `src/config/media.ts`. */
+  media: MediaKey;
+  /** Composition weight — alternates the layout down the page. */
+  layout: 'monument' | 'offset-right' | 'offset-left' | 'panorama';
 };
 
 export const work = {
@@ -193,11 +132,8 @@ export const work = {
       services: ['Strategy', 'Identity', 'Digital'],
       result: '42% increase in qualified demo enquiries',
       year: '2025',
-      image: {
-        src: '/images/hml/work-northline.png',
-        alt: 'Northline: a measured sequence of graphite bars on a cool structural field',
-      },
-      layout: 'wide',
+      media: 'identity',
+      layout: 'monument',
     },
     {
       id: 'soma',
@@ -206,10 +142,7 @@ export const work = {
       services: ['Campaign', 'Art Direction', 'Content'],
       result: '3.1× campaign return on ad spend',
       year: '2025',
-      image: {
-        src: '/images/hml/work-soma.png',
-        alt: 'Soma: soft overlapping forms in warm amber and clay',
-      },
+      media: 'culture',
       layout: 'offset-right',
     },
     {
@@ -219,10 +152,7 @@ export const work = {
       services: ['E-commerce', 'UX', 'Development'],
       result: '28% higher conversion rate',
       year: '2024',
-      image: {
-        src: '/images/hml/work-fieldnote.png',
-        alt: 'Fieldnote: a high-contrast editorial crop with a yellow disc and black plane',
-      },
+      media: 'digital',
       layout: 'offset-left',
     },
     {
@@ -232,11 +162,8 @@ export const work = {
       services: ['Brand', 'Web', 'Campaign'],
       result: 'Three locations launched through one flexible system',
       year: '2024',
-      image: {
-        src: '/images/hml/work-commonground.png',
-        alt: 'Common Ground: a colonnade of arches across a warm ochre field',
-      },
-      layout: 'wide',
+      media: 'terrain',
+      layout: 'panorama',
     },
   ] as Project[],
 };

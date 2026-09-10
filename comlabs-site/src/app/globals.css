@@ -150,19 +150,61 @@ button {
   font-weight: 500;
 }
 
-/* Images handed to the shared WebGL canvas fade out once it is drawing,
-   but stay in the DOM so alt text, no-JS and context-loss all still work. */
-.webgl-surface img {
-  transition: opacity 320ms ease;
+/* Art-directed crops. Both are carried as custom properties on the frame and
+   chosen here, so server and client render identical markup and mobile gets a
+   real crop rather than a squashed desktop one. */
+.webgl-surface {
+  aspect-ratio: var(--hml-aspect-m);
 }
 
-:root[data-webgl='on'] .webgl-surface img {
+.webgl-surface img {
+  object-position: var(--hml-pos-m);
+  filter: var(--hml-grade);
+  transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 768px) {
+  .webgl-surface {
+    aspect-ratio: var(--hml-aspect-d);
+  }
+
+  .webgl-surface img {
+    object-position: var(--hml-pos-d);
+  }
+}
+
+/* A photograph only hands over to the shader once its texture has actually
+   uploaded. If the remote image is slow, blocked by CORS, or the context is
+   lost, the graded `next/image` simply stays visible — never a blank frame. */
+
+.webgl-surface[data-webgl-ready='true'] img {
   opacity: 0;
 }
 
-:root[data-webgl='on'] .webgl-surface {
+.webgl-surface[data-webgl-ready='true'] {
   background-color: transparent;
   box-shadow: none;
+}
+
+/* Entry reveal for the DOM fallback, so the composition still arrives rather
+   than simply appearing. The shader runs its own threshold wipe. */
+@media (prefers-reduced-motion: no-preference) {
+  .webgl-surface[data-in-view='true']:not([data-webgl-ready='true']) img {
+    animation: hml-plate-in 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes hml-plate-in {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+    clip-path: inset(0 0 12% 0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    clip-path: inset(0 0 0 0);
+  }
 }
 
 /* Word-level reveal. The animated copy is aria-hidden; a single visually

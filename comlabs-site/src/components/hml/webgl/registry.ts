@@ -1,20 +1,15 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import type { MediaAsset } from '@/config/media';
 
 export type SurfaceOptions = {
-  /** Texture URL. */
-  src: string;
-  /** Corner radius in CSS pixels. */
-  radius?: number;
-  /** How strongly the pointer distorts this surface. */
-  distortion?: number;
-  /** 0 = full colour, 1 = fully desaturated at rest. */
+  /** The art-directed asset. Crop, grading and shader mode all come from it. */
+  asset: MediaAsset;
+  /** Use the mobile crop instead of the desktop one. */
+  compact?: boolean;
+  /** Desaturation at rest, layered on top of the asset's own grade. */
   restGrayscale?: number;
-  /** Extra zoom applied while hovered. */
-  hoverZoom?: number;
-  /** Scroll-linked displacement multiplier. */
-  scrollInfluence?: number;
 };
 
 export type Surface = SurfaceOptions & {
@@ -22,10 +17,14 @@ export type Surface = SurfaceOptions & {
   element: HTMLElement;
   /** Eased 0…1 hover progress, written by the render loop. */
   hover: number;
-  /** Hover target set by pointer events on the DOM node. */
   hoverTarget: number;
-  /** Desaturation target, 0…1. Components may change this at any time. */
+  /** Extra desaturation target — a sibling being focused, for example. */
   grayTarget: number;
+  /** 0…1 entry reveal, driven by an IntersectionObserver. */
+  reveal: number;
+  revealTarget: number;
+  /** True while the element is anywhere near the viewport. */
+  inView: boolean;
 };
 
 const surfaces = new Map<string, Surface>();
@@ -42,14 +41,23 @@ export function subscribeToSurfaces(listener: () => void) {
   };
 }
 
+export function getSurfaces(): Surface[] {
+  return Array.from(surfaces.values());
+}
+
 /** Lets a component desaturate a surface — used when a sibling is focused. */
 export function setSurfaceGray(id: string, value: number) {
   const surface = surfaces.get(id);
   if (surface) surface.grayTarget = value;
 }
 
-export function getSurfaces(): Surface[] {
-  return Array.from(surfaces.values());
+/**
+ * Marks a surface as drawn by WebGL. The `next/image` underneath only fades
+ * out once its texture has actually uploaded, so a slow or blocked remote
+ * image simply stays as a normal photograph instead of going blank.
+ */
+export function markSurfaceReady(id: string) {
+  surfaces.get(id)?.element.setAttribute('data-webgl-ready', 'true');
 }
 
 /**
@@ -60,6 +68,8 @@ export function useWebGLSurface<T extends HTMLElement>(id: string, options: Surf
   const ref = useRef<T>(null);
   const optionsRef = useRef(options);
   optionsRef.current = options;
+
+  const compact = options.compact;
 
   useEffect(() => {
     const element = ref.current;
@@ -72,6 +82,9 @@ export function useWebGLSurface<T extends HTMLElement>(id: string, options: Surf
       hover: 0,
       hoverTarget: 0,
       grayTarget: optionsRef.current.restGrayscale ?? 0,
+      reveal: 0,
+      revealTarget: 0,
+      inView: false,
     };
     surfaces.set(id, surface);
     notify();
@@ -86,13 +99,33 @@ export function useWebGLSurface<T extends HTMLElement>(id: string, options: Surf
     element.addEventListener('pointerenter', enter);
     element.addEventListener('pointerleave', leave);
 
+    // Reveal on entry, and let the render loop skip work while off screen.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          surface.inView = entry.isIntersecting;
+          if (entry.isIntersecting) {
+            surface.revealTarget = 1;
+            // Drives the CSS reveal used whenever WebGL is not running.
+            element.setAttribute('data-in-view', 'true');
+          }
+        });
+      },
+      { rootMargin: '18% 0px', threshold: 0 },
+    );
+    observer.observe(element);
+
     return () => {
+      observer.disconnect();
       element.removeEventListener('pointerenter', enter);
       element.removeEventListener('pointerleave', leave);
+      element.removeAttribute('data-webgl-ready');
+      element.removeAttribute('data-in-view');
       surfaces.delete(id);
       notify();
     };
-  }, [id]);
+    // `compact` re-registers the surface when the crop switches breakpoint.
+  }, [id, compact]);
 
   return ref;
 }

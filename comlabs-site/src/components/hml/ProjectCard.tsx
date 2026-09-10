@@ -1,40 +1,52 @@
 'use client';
 
-import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Project } from '@/config/agency';
+import { media } from '@/config/media';
 import { useFinePointer } from '@/lib/hml/useMediaQuery';
 import { useReducedMotion } from '@/lib/hml/useReducedMotion';
-import { useWebGLSurface } from './webgl/registry';
+import { ShaderImage } from './ShaderImage';
 
-const layoutClasses: Record<Project['layout'], { frame: string; body: string; aspect: string }> = {
-  wide: {
-    frame: 'lg:col-span-12',
-    body: 'lg:col-span-12 lg:flex lg:items-end lg:justify-between lg:gap-12',
-    aspect: 'aspect-[4/3] sm:aspect-[16/9]',
+/**
+ * Four deliberately different compositions rather than four cards.
+ *
+ * monument     — the frame runs past the right edge, copy held left
+ * offset-right — tall portrait crop on the right, copy in the outer column
+ * offset-left  — the frame breaks the left edge, copy pulled to the far right
+ * panorama     — a narrow full-bleed band with the copy sitting beneath it
+ */
+const LAYOUTS = {
+  monument: {
+    root: 'lg:grid lg:grid-cols-12 lg:items-end lg:gap-x-8',
+    frame: 'lg:col-span-8 lg:col-start-5 lg:-mr-[7vw]',
+    body: 'lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:pb-6',
+    sizes: '(max-width: 1024px) 100vw, 62vw',
   },
   'offset-right': {
-    frame: 'lg:col-span-7 lg:col-start-6',
-    body: 'lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:self-end',
-    aspect: 'aspect-[4/3] sm:aspect-[5/4]',
+    root: 'lg:grid lg:grid-cols-12 lg:items-center lg:gap-x-8',
+    frame: 'lg:col-span-5 lg:col-start-8',
+    body: 'lg:col-span-5 lg:col-start-1 lg:row-start-1',
+    sizes: '(max-width: 1024px) 100vw, 42vw',
   },
   'offset-left': {
-    frame: 'lg:col-span-7',
-    body: 'lg:col-span-4 lg:col-start-9 lg:self-end',
-    aspect: 'aspect-[4/3] sm:aspect-[5/4]',
+    root: 'lg:grid lg:grid-cols-12 lg:items-center lg:gap-x-8',
+    frame: 'lg:col-span-7 lg:col-start-1 lg:-ml-[7vw]',
+    body: 'lg:col-span-4 lg:col-start-9',
+    sizes: '(max-width: 1024px) 100vw, 58vw',
   },
-};
+  panorama: {
+    root: '',
+    frame: 'lg:-mx-[7vw]',
+    body: 'lg:grid lg:grid-cols-12 lg:items-end lg:gap-x-8',
+    sizes: '100vw',
+  },
+} as const;
 
 export function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const frame = useWebGLSurface<HTMLDivElement>(`work-${project.id}`, {
-    src: project.image.src,
-    radius: 18,
-    distortion: 0.8,
-    restGrayscale: 0.25,
-    hoverZoom: 0.9,
-    scrollInfluence: 0.9,
-  });
+  const asset = media[project.media];
+  const layout = LAYOUTS[project.layout];
 
+  const frame = useRef<HTMLDivElement | null>(null);
   const label = useRef<HTMLSpanElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const [open, setOpen] = useState(false);
@@ -43,12 +55,15 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
   const reducedMotion = useReducedMotion();
   const interactive = finePointer && !reducedMotion;
 
-  // Pointer listeners are attached on enter and removed on leave, so nothing
-  // keeps running once the cursor is elsewhere.
-  const onEnter = useCallback(() => {
-    if (!interactive) return;
+  const registerFrame = useCallback((element: HTMLDivElement | null) => {
+    frame.current = element;
+  }, []);
+
+  // Pointer listeners attach on enter and detach on leave — nothing keeps
+  // running once the cursor is elsewhere on the page.
+  useEffect(() => {
     const element = frame.current;
-    if (!element) return;
+    if (!element || !interactive) return;
 
     const onMove = (event: PointerEvent) => {
       const rect = element.getBoundingClientRect();
@@ -60,7 +75,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         label.current.style.opacity = '1';
       }
       if (title.current) {
-        const dx = (x / rect.width - 0.5) * 18;
+        const dx = (x / rect.width - 0.5) * 14;
         title.current.style.transform = `translate3d(${dx.toFixed(2)}px, 0, 0)`;
       }
     };
@@ -68,62 +83,54 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
     const onLeave = () => {
       if (label.current) {
         label.current.style.opacity = '0';
-        label.current.style.transform += ' scale(0.7)';
+        label.current.style.transform += ' scale(0.72)';
       }
       if (title.current) title.current.style.transform = 'translate3d(0, 0, 0)';
       element.removeEventListener('pointermove', onMove);
       element.removeEventListener('pointerleave', onLeave);
     };
 
-    element.addEventListener('pointermove', onMove);
-    element.addEventListener('pointerleave', onLeave);
-  }, [frame, interactive]);
+    const onEnter = () => {
+      element.addEventListener('pointermove', onMove);
+      element.addEventListener('pointerleave', onLeave);
+    };
 
-  useEffect(() => {
-    const element = frame.current;
-    if (!element || !interactive) return;
     element.addEventListener('pointerenter', onEnter);
-    return () => element.removeEventListener('pointerenter', onEnter);
-  }, [frame, interactive, onEnter]);
-
-  const classes = layoutClasses[project.layout];
+    return () => {
+      element.removeEventListener('pointerenter', onEnter);
+      element.removeEventListener('pointermove', onMove);
+      element.removeEventListener('pointerleave', onLeave);
+    };
+  }, [interactive]);
 
   return (
-    <article
-      data-project
-      className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start lg:gap-x-8"
-    >
-      <div className={classes.frame}>
-        <div
-          ref={frame}
-          className={`webgl-surface relative w-full overflow-hidden rounded-[18px] bg-obsidian/5 ${classes.aspect}`}
+    <article data-project className={layout.root}>
+      <div className={layout.frame}>
+        <ShaderImage
+          id={`work-${project.id}`}
+          asset={asset}
+          onFrame={registerFrame}
+          sizes={layout.sizes}
+          restGrayscale={0.2}
+          className="w-full"
         >
-          <Image
-            src={project.image.src}
-            alt={project.image.alt}
-            fill
-            sizes="(max-width: 1024px) 100vw, 60vw"
-            loading="lazy"
-            className="object-cover"
-          />
-
-          {/* Decorative pointer label — the card itself is not a link, so
-              nothing here promises a page that does not exist. */}
+          {/* Decorative pointer label. The card is not a link, so nothing
+              here promises a case-study page that does not exist. */}
           <span
             ref={label}
             aria-hidden="true"
-            className="pointer-events-none absolute left-0 top-0 z-10 hidden h-[92px] w-[92px] items-center justify-center rounded-full bg-signalYellow text-center text-[11px] uppercase leading-[1.25] tracking-[0.12em] text-obsidian opacity-0 transition-opacity duration-300 lg:flex"
-            style={{ transform: 'translate3d(-100px, -100px, 0) scale(0.7)' }}
+            className="pointer-events-none absolute left-0 top-0 z-20 hidden h-[96px] w-[96px] items-center justify-center rounded-full bg-signalYellow text-center text-[11px] uppercase leading-[1.25] tracking-[0.12em] text-obsidian opacity-0 transition-opacity duration-300 lg:flex"
+            style={{ transform: 'translate3d(-200px, -200px, 0) scale(0.72)' }}
           >
             View
             <br />
             project
           </span>
-        </div>
+        </ShaderImage>
       </div>
 
-      <div className={`${classes.body} pt-1`} data-project-body>
-        <div>
+      <div className={`${layout.body} mt-7 lg:mt-0`} data-project-body>
+        <div className={project.layout === 'panorama' ? 'lg:col-span-7 lg:pt-10' : ''}>
           <div className="flex items-baseline gap-4">
             <span className="text-[12px] tabular-nums tracking-[0.18em] text-slate">
               {String(index + 1).padStart(2, '0')}
@@ -143,8 +150,18 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
           </p>
         </div>
 
-        <div className="mt-6 lg:mt-0 lg:shrink-0 lg:text-right">
-          <ul className="flex flex-wrap gap-2 lg:justify-end">
+        <div
+          className={
+            project.layout === 'panorama'
+              ? 'mt-6 lg:col-span-4 lg:col-start-9 lg:mt-0 lg:pt-10 lg:text-right'
+              : 'mt-6'
+          }
+        >
+          <ul
+            className={`flex flex-wrap gap-2 ${
+              project.layout === 'panorama' ? 'lg:justify-end' : ''
+            }`}
+          >
             {project.services.map((service) => (
               <li
                 key={service}
@@ -155,7 +172,11 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
             ))}
           </ul>
 
-          <p className="mt-5 flex items-baseline gap-2 text-[15px] lg:justify-end">
+          <p
+            className={`mt-5 flex items-baseline gap-2 text-[15px] ${
+              project.layout === 'panorama' ? 'lg:justify-end' : ''
+            }`}
+          >
             <span aria-hidden="true" className="h-[6px] w-[6px] rounded-full bg-signalYellow" />
             {project.result}
           </p>

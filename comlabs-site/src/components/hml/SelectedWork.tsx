@@ -39,7 +39,11 @@ export function SelectedWork() {
   }, [reducedMotion]);
 
   return (
-    <section id="work" ref={section} className="scroll-mt-24 py-24 sm:py-28 lg:py-32">
+    <section
+      id="work"
+      ref={section}
+      className="scroll-mt-24 overflow-x-clip py-24 sm:py-28 lg:py-32"
+    >
       <div className="mx-auto max-w-editorial px-5 sm:px-8 lg:px-12">
         <div className="grid gap-8 lg:grid-cols-12">
           <p className="text-[11px] uppercase tracking-[0.2em] text-slate lg:col-span-3">
@@ -51,11 +55,16 @@ export function SelectedWork() {
           />
         </div>
 
-        <div className="mt-16 space-y-20 sm:mt-20 sm:space-y-28 lg:space-y-36">
-          {work.items.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
+      </div>
+
+      {/* Compositions run to the page edge, so they sit outside the grid
+          container and re-establish their own gutters where needed. */}
+      <div className="mt-16 space-y-24 sm:mt-20 sm:space-y-32 lg:space-y-40">
+        {work.items.map((project, index) => (
+          <div key={project.id} className="mx-auto max-w-editorial px-5 sm:px-8 lg:px-12">
+            <ProjectCard project={project} index={index} />
+          </div>
+        ))}
       </div>
     </section>
   );
