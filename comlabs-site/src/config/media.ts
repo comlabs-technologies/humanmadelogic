@@ -132,6 +132,20 @@ const heroStudy = (id: string, file: string, alt: string): MediaAsset => ({
   },
 });
 
+/*
+ * Shared treatment for the three architectural panels: the original V1 hover
+ * feel — strong cursor-driven refraction that settles once the pointer leaves.
+ */
+const PANEL_TREATMENT: Treatment = {
+  mode: 'refract',
+  grade: EDITORIAL,
+  displacement: 1,
+  pointerInfluence: 1.35,
+  scrollInfluence: 0.55,
+  chromatic: 1,
+  damping: 7,
+};
+
 export const media = {
   /* ---------------------------------------------------------------- hero */
 
@@ -163,64 +177,45 @@ export const media = {
 
   /* -------------------------------------------------------- architecture */
 
-  /**
-   * The monumental plate. Anchors the process section: a wide architectural
-   * crop that runs past the right edge of the grid.
+  /*
+   * A stack of three overlapping panels rather than a scattered cluster: one
+   * large plate, a second crossing its lower-right corner, and a narrow third
+   * sitting behind them at the right. All three carry the original V1 hover
+   * treatment — strong cursor-driven refraction that settles when the pointer
+   * leaves — so the movement matches the hero fan rather than the subdued
+   * treatment used for the full-bleed photographic bands.
    */
+  /** The primary panel. */
   monument: {
     id: 'process-monument',
     src: ARCHITECTURE_PRIMARY,
     alt: 'Monumental concrete architecture, cropped so the structure falls away into deep shadow',
-    desktop: { aspect: '21 / 9', position: '38% 42%' },
-    mobile: { aspect: '5 / 6', position: '44% 40%' },
-    radius: 2,
-    treatment: {
-      mode: 'refract',
-      grade: EDITORIAL_DEEP,
-      displacement: 0.5,
-      pointerInfluence: 0.75,
-      scrollInfluence: 0.5,
-      chromatic: 0.5,
-      damping: 5,
-    },
+    desktop: { aspect: '16 / 10', position: '40% 44%' },
+    mobile: { aspect: '4 / 3', position: '44% 44%' },
+    radius: 16,
+    treatment: PANEL_TREATMENT,
   },
 
-  /** Narrow vertical counterpoint, rising above the monument. */
-  pillar: {
-    id: 'process-pillar',
-    src: ARCHITECTURE_SECOND,
-    alt: '',
-    desktop: { aspect: '3 / 5', position: '50% 35%' },
-    mobile: { aspect: '3 / 4', position: '50% 40%' },
-    radius: 2,
-    treatment: {
-      mode: 'refract',
-      grade: EDITORIAL_DEEP,
-      displacement: 0.42,
-      pointerInfluence: 1.1,
-      scrollInfluence: 0.6,
-      chromatic: 0.4,
-      damping: 5.5,
-    },
-  },
-
-  /** Second counterpoint, dropped below the monument's baseline. */
+  /** Crosses the lower-right corner of the primary panel. */
   aperture: {
     id: 'process-aperture',
     src: ARCHITECTURE_THIRD,
     alt: '',
-    desktop: { aspect: '4 / 5', position: '55% 48%' },
-    mobile: { aspect: '3 / 4', position: '52% 45%' },
-    radius: 2,
-    treatment: {
-      mode: 'refract',
-      grade: EDITORIAL_DEEP,
-      displacement: 0.45,
-      pointerInfluence: 0.95,
-      scrollInfluence: 0.6,
-      chromatic: 0.4,
-      damping: 5.5,
-    },
+    desktop: { aspect: '16 / 11', position: '52% 48%' },
+    mobile: { aspect: '4 / 3', position: '52% 46%' },
+    radius: 16,
+    treatment: PANEL_TREATMENT,
+  },
+
+  /** Narrow panel tucked behind the stack, visible at the right edge. */
+  pillar: {
+    id: 'process-pillar',
+    src: ARCHITECTURE_SECOND,
+    alt: '',
+    desktop: { aspect: '3 / 5', position: '52% 38%' },
+    mobile: { aspect: '3 / 4', position: '50% 40%' },
+    radius: 16,
+    treatment: PANEL_TREATMENT,
   },
 
   /* ----------------------------------------------------------- statement */
