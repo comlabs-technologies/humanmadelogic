@@ -57,51 +57,42 @@ export function Process() {
   return (
     <section ref={section} className="overflow-x-clip py-24 sm:py-32 lg:py-40">
       {/*
-        Architectural interlude. Structure, order and load-bearing geometry —
-        the visual argument for "clear thinking before decoration". The plate
-        runs past the right edge; two counterpoints rise above and drop below
-        its baseline, so the cluster never reads as a boxed illustration.
+        Architectural interlude, composed as a stack of overlapping panels:
+        a primary plate, a second crossing its lower-right corner, and a
+        narrow third tucked behind at the right edge. Shadows sit on the
+        wrappers rather than the frames, so the depth survives once the shader
+        takes the images over.
       */}
       <div className="mx-auto mb-20 max-w-editorial px-5 sm:mb-24 sm:px-8 lg:mb-32 lg:px-12">
-        <div className="relative">
-          <div className="-mx-5 sm:-mx-8 md:mx-0">
-            <div className="relative md:ml-[22%] md:mr-[-8vw]">
-              <ShaderImage
-                id={media.monument.id}
-                asset={media.monument}
-                sizes="(max-width: 768px) 100vw, 72vw"
-                className="w-full"
-              />
-              {/* The left edge sinks into paper rather than stopping at a line. */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-[22%] md:block"
-                style={{
-                  background:
-                    'linear-gradient(to right, rgba(242,240,235,1) 0%, rgba(242,240,235,0.6) 42%, rgba(242,240,235,0) 100%)',
-                }}
-              />
-            </div>
+        <div className="relative pb-16 sm:pb-20 lg:pb-24">
+          {/* Narrow panel, furthest back. */}
+          <div className="absolute right-0 top-[6%] z-0 hidden w-[17%] rounded-[16px] shadow-[0_30px_70px_-34px_rgba(21,21,21,0.55)] md:block lg:w-[15%]">
+            <ShaderImage
+              id={media.pillar.id}
+              asset={media.pillar}
+              sizes="17vw"
+              className="w-full"
+            />
           </div>
 
-          <div className="mt-4 flex items-start gap-3 md:contents">
-            <div className="w-[44%] -translate-y-8 md:absolute md:left-0 md:top-[-10%] md:w-[18%] md:translate-y-0">
-              <ShaderImage
-                id={media.pillar.id}
-                asset={media.pillar}
-                sizes="(max-width: 768px) 44vw, 19vw"
-                className="w-full"
-              />
-            </div>
+          {/* Primary plate. */}
+          <div className="relative z-10 w-full rounded-[16px] shadow-[0_40px_90px_-40px_rgba(21,21,21,0.6)] md:w-[74%] lg:w-[70%]">
+            <ShaderImage
+              id={media.monument.id}
+              asset={media.monument}
+              sizes="(max-width: 768px) 100vw, 70vw"
+              className="w-full"
+            />
+          </div>
 
-            <div className="w-[36%] translate-y-4 md:absolute md:bottom-[-14%] md:left-[12%] md:w-[14%] md:translate-y-0">
-              <ShaderImage
-                id={media.aperture.id}
-                asset={media.aperture}
-                sizes="(max-width: 768px) 36vw, 15vw"
-                className="w-full"
-              />
-            </div>
+          {/* Second panel, crossing the primary plate's lower-right corner. */}
+          <div className="relative z-20 -mt-10 ml-auto w-[68%] rounded-[16px] shadow-[0_36px_80px_-34px_rgba(21,21,21,0.55)] sm:-mt-14 sm:w-[58%] md:absolute md:bottom-0 md:right-[6%] md:mt-0 md:w-[44%] lg:w-[40%]">
+            <ShaderImage
+              id={media.aperture.id}
+              asset={media.aperture}
+              sizes="(max-width: 768px) 68vw, 44vw"
+              className="w-full"
+            />
           </div>
         </div>
       </div>
