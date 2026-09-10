@@ -89,6 +89,10 @@ export const fragmentShader = /* glsl */ `
 
   void main() {
     vec2 uv = vUv;
+
+    // Gentle zoom under the pointer.
+    uv = (uv - 0.5) / (1.0 + uHover * 0.04) + 0.5;
+
     vec2 aspect = vec2(uPlaneSize.x / max(uPlaneSize.y, 1.0), 1.0);
     vec2 toPointer = (uv - 0.5 - uPointer) * aspect;
     float pointerDist = length(toPointer);
@@ -100,14 +104,16 @@ export const fragmentShader = /* glsl */ `
 
     if (uMode == 0) {
       // Architecture: a very slow standing refraction across the structure,
-      // plus a small parallax lean towards the cursor. No waving.
+      // plus a parallax lean towards the cursor. Hover is what really drives
+      // it — at rest the frame is almost still, under the pointer it bends.
       float slow = noise(uv * 2.2 + uTime * 0.035) - 0.5;
       shift += vec2(slow, slow * 0.45) * 0.010 * amount;
       shift += (uPointer * 0.012 * uPointerInfluence) * (0.35 + uHover * 0.65);
-      shift += normalize(toPointer + vec2(0.0001)) * pointerField * 0.008
+      shift += normalize(toPointer + vec2(0.0001)) * pointerField
+             * (0.006 + uHover * 0.020)
              * amount * uPointerInfluence * (0.3 + uVelocity * 0.7);
       shift.y += uScroll * 0.006 * uScrollInfluence;
-      chroma = uChromatic * uVelocity * 0.0016;
+      chroma = uChromatic * uVelocity * (0.25 + uHover * 0.75) * 0.0022;
 
     } else if (uMode == 1) {
       // Material: low-frequency drift along the flow of the dunes, so the
