@@ -219,7 +219,7 @@ function Surfaces({ reducedMotion }: { reducedMotion: boolean }) {
       target.y += (localY - target.y) * Math.min(1, step * damping);
 
       uniforms.uVelocity.value +=
-        (pointer.velocity - uniforms.uVelocity.value) * Math.min(1, step * damping * 0.8);
+        (pointer.velocity - uniforms.uVelocity.value) * Math.min(1, step * damping * 1.1);
       uniforms.uScroll.value +=
         (scrollVelocity - uniforms.uScroll.value) * Math.min(1, step * damping * 0.7);
 

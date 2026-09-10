@@ -8,7 +8,7 @@ import { media } from '@/config/media';
 import { useReducedMotion } from '@/lib/hml/useReducedMotion';
 import { useIsomorphicLayoutEffect } from '@/lib/hml/useIsomorphicLayoutEffect';
 import { setSurfaceGray } from './webgl/registry';
-import { ScenicStage } from './ScenicStage';
+import { ScenicStage, StageWindow } from './ScenicStage';
 import { RevealText } from './RevealText';
 
 /**
@@ -76,7 +76,25 @@ export function AgencyStatement() {
           as overlapping windows. */}
       <div data-belief-plate className="mt-16 sm:mt-20 lg:mt-24">
         <div className="mx-auto max-w-editorial px-5 sm:px-8 lg:px-12">
-          <ScenicStage />
+          <ScenicStage id="belief" priority>
+            {/* Primary window — the dunes. */}
+            <StageWindow
+              id={media.belief.id}
+              asset={media.belief}
+              layer={20}
+              priority
+              sizes="(max-width: 768px) 76vw, 62vw"
+              className="left-[5%] top-[7%] z-20 w-[76%] md:w-[70%]"
+            />
+            {/* Second window, crossing its lower-right corner. */}
+            <StageWindow
+              id={`${media.terrain.id}-belief`}
+              asset={media.terrain}
+              layer={30}
+              sizes="(max-width: 768px) 64vw, 44vw"
+              className="bottom-[5%] right-[2%] z-30 w-[64%] md:w-[48%]"
+            />
+          </ScenicStage>
         </div>
       </div>
 
