@@ -10,6 +10,12 @@ export type SurfaceOptions = {
   compact?: boolean;
   /** Desaturation at rest, layered on top of the asset's own grade. */
   restGrayscale?: number;
+  /**
+   * Draw order inside the shared canvas. Every plane sits at z = 0 with depth
+   * testing off, so this is what decides which photograph covers which — it
+   * must mirror the DOM stacking of the same frames.
+   */
+  layer?: number;
 };
 
 export type Surface = SurfaceOptions & {

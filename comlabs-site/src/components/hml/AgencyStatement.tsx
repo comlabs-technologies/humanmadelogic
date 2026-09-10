@@ -8,7 +8,7 @@ import { media } from '@/config/media';
 import { useReducedMotion } from '@/lib/hml/useReducedMotion';
 import { useIsomorphicLayoutEffect } from '@/lib/hml/useIsomorphicLayoutEffect';
 import { setSurfaceGray } from './webgl/registry';
-import { ShaderImage } from './ShaderImage';
+import { ScenicStage } from './ScenicStage';
 import { RevealText } from './RevealText';
 
 /**
@@ -72,15 +72,11 @@ export function AgencyStatement() {
         </div>
       </div>
 
-      {/* Panoramic band. Full-bleed left, past the grid on the right. */}
+      {/* The scenic stage: shader field behind, scenic photography laid on it
+          as overlapping windows. */}
       <div data-belief-plate className="mt-16 sm:mt-20 lg:mt-24">
-        <div className="md:ml-[8vw] md:-mr-[6vw]">
-          <ShaderImage
-            id={media.belief.id}
-            asset={media.belief}
-            sizes="(max-width: 768px) 100vw, 95vw"
-            className="w-full"
-          />
+        <div className="mx-auto max-w-editorial px-5 sm:px-8 lg:px-12">
+          <ScenicStage />
         </div>
       </div>
 

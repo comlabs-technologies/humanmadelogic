@@ -16,6 +16,8 @@ type ShaderImageProps = {
   priority?: boolean;
   /** Extra desaturation at rest, on top of the asset's own grade. */
   restGrayscale?: number;
+  /** Draw order inside the shared canvas. Must mirror the DOM stacking. */
+  layer?: number;
   style?: CSSProperties;
   /** Overrides the asset's alt text when the context needs something else. */
   alt?: string;
@@ -47,6 +49,7 @@ export function ShaderImage({
   sizes,
   priority = false,
   restGrayscale,
+  layer,
   style,
   alt,
   onFrame,
@@ -55,7 +58,7 @@ export function ShaderImage({
   // Only used to choose which focal point the shader samples around. It runs
   // in an effect, so it never affects server-rendered output.
   const compact = !useMediaQuery('(min-width: 768px)');
-  const ref = useWebGLSurface<HTMLDivElement>(id, { asset, compact, restGrayscale });
+  const ref = useWebGLSurface<HTMLDivElement>(id, { asset, compact, restGrayscale, layer });
 
   useEffect(() => {
     onFrame?.(ref.current);
@@ -68,7 +71,7 @@ export function ShaderImage({
   const cssGrade = [
     `saturate(${grade.saturation})`,
     `contrast(${grade.contrast})`,
-    `brightness(${(1 + grade.lift * 0.9).toFixed(3)})`,
+    `brightness(${(grade.brightness * (1 + grade.lift * 0.9)).toFixed(3)})`,
   ].join(' ');
 
   const resolvedAlt = alt ?? asset.alt;
