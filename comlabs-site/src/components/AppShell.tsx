@@ -5,13 +5,19 @@ import { AnnouncementBar, Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 
 /**
- * The homepage is a standalone agency site with its own header, main and
- * footer, so it opts out of the shared chrome used by the inner pages.
+ * Homepage, contact, MCP and admin use the Human Made Logic chrome.
+ * Remaining Relay template routes keep the shared announcement bar and footer.
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const isHome = usePathname() === '/';
+  const pathname = usePathname();
+  const isHml =
+    pathname === '/' ||
+    pathname === '/contact' ||
+    pathname === '/mcp' ||
+    pathname === '/admin' ||
+    pathname.startsWith('/admin/');
 
-  if (isHome) return <>{children}</>;
+  if (isHml) return <>{children}</>;
 
   return (
     <>

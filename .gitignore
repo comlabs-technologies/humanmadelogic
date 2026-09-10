@@ -13,6 +13,9 @@ out/
 .env.local
 .env.*
 
+# Contact enquiry store
+comlabs-site/data/
+
 # IDE files
 .vscode/
 .idea/

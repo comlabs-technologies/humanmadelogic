@@ -17,7 +17,8 @@ layer, so you can rebrand the whole site without touching a component.
 | `/pricing` | Three tiers, one recommended, plus a grouped comparison table and FAQ |
 | `/resources` | Resource index with a featured article, category sections and a help-centre grid |
 | `/resources/[slug]` | Full article route, statically generated from the content layer |
-| `/contact` | Accessible contact form with client-side validation states (no backend) |
+| `/contact` | Human Made Logic contact form. Submissions are emailed with nodemailer and stored for the admin panel |
+| `/admin` | Password-protected studio panel: enquiries, provider status, and how to use MCP |
 | `/privacy` | Placeholder privacy policy with an in-page contents rail |
 | `/terms` | Placeholder terms, including template licence notes |
 | `404` | Custom not-found page |
@@ -27,7 +28,9 @@ favicon, and an Open Graph fallback image generated at build time.
 
 ## Stack
 
-- **Next.js 14** (App Router, TypeScript, static export-friendly)
+- **Next.js 14** (App Router, TypeScript)
+- **nodemailer** for contact delivery
+- **mcp-handler** + `@modelcontextprotocol/server` for the ComLabs MCP endpoint
 - **Google Sans** (display) self-hosted from `public/fonts`, **Inter** and **Instrument Serif** through `next/font` — no runtime request to a font CDN
 - **Tailwind CSS 3** with a small token layer
 - **lucide-react** for icons
@@ -47,9 +50,58 @@ Requires Node 18.17 or newer.
 
 ### Environment variables
 
-None. The template ships without an `.env.example` because nothing in it reads
-from the environment. If you connect the contact form or an analytics provider,
-add your own `.env.local` and document it here.
+See `env.example`. Copy it to `.env.local`.
+
+Required for a live contact inbox:
+
+- `CONTACT_TO` — defaults to `kuntal@humanmadelogic.fun`
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` — nodemailer SMTP
+- `ADMIN_PASSWORD` — required to open `/admin`
+
+Optional model keys for the MCP `ask` tool:
+
+- `ANTHROPIC_API_KEY` (Claude)
+- `OPENAI_API_KEY` (GPT)
+- `GOOGLE_API_KEY` (Gemini)
+
+Without SMTP, enquiries are still stored locally and nodemailer runs in JSON transport so the form can be developed without credentials.
+
+## ComLabs MCP
+
+The studio exposes a Model Context Protocol server at `/api/mcp` (HTTP) and via `npm run mcp` (stdio). Claude Desktop, ChatGPT, Cursor and other MCP clients can connect to it.
+
+Tools: `studio_profile`, `list_capabilities`, `list_work`, `list_providers`, `ask`, `submit_inquiry`, `list_inquiries`.
+
+Cursor example:
+
+```json
+{
+  "mcpServers": {
+    "comlabs": {
+      "url": "http://localhost:3000/api/mcp"
+    }
+  }
+}
+```
+
+Claude Desktop (stdio-only) via `mcp-remote`:
+
+```json
+{
+  "mcpServers": {
+    "comlabs": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "http://localhost:3000/api/mcp"]
+    }
+  }
+}
+```
+
+Local stdio:
+
+```bash
+npm run mcp
+```
 
 ## Customisation
 

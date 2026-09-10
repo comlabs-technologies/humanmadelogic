@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { agency } from '@/config/agency';
 
 function Wordmark({ compact = false }: { compact?: boolean }) {
@@ -23,9 +24,12 @@ function Wordmark({ compact = false }: { compact?: boolean }) {
  * container and cross-faded, so nothing in the document reflows.
  */
 export function SiteHeader() {
+  const pathname = usePathname();
+  const home = pathname === '/';
   const [condensed, setCondensed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const wordmarkHref = home ? '#top' : '/';
 
   useEffect(() => {
     let frame = 0;
@@ -72,7 +76,7 @@ export function SiteHeader() {
             : 'translate-y-0 opacity-100'
         }`}
       >
-        <a href="#top" className="rounded-sm">
+        <a href={wordmarkHref} className="rounded-sm">
           <Wordmark />
         </a>
 
@@ -122,7 +126,7 @@ export function SiteHeader() {
           condensed ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-3 opacity-0'
         }`}
       >
-        <a href="#top" className="rounded-full px-3 py-2" aria-label={`${agency.name} — back to top`}>
+        <a href={wordmarkHref} className="rounded-full px-3 py-2" aria-label={`${agency.name} — back to top`}>
           <Wordmark compact />
         </a>
 
