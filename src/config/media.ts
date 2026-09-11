@@ -187,9 +187,11 @@ const backdropPanel = (id: string, file: string): MediaAsset => ({
  *
  * Each entry mirrors the aspect ratios of the asset it replaced, so the
  * alternating card composition, image dimensions and stage proportions in the
- * section are unchanged. Files are served locally from
- * `public/images/hml/selected-work/` rather than hotlinked.
+ * section are unchanged. Sources are the live humanmadelogic.fun uploads,
+ * allow-listed in `next.config.js`.
  */
+const WORK_UPLOADS = 'https://humanmadelogic.fun/wp-content/uploads/2025/03';
+
 const serviceWork = (
   id: string,
   file: string,
@@ -198,7 +200,7 @@ const serviceWork = (
   treatment: Treatment,
 ): MediaAsset => ({
   id: `work-${id}`,
-  src: `/images/hml/selected-work/${file}.webp`,
+  src: `${WORK_UPLOADS}/${file}.webp`,
   alt,
   desktop: crops.desktop,
   mobile: crops.mobile,
@@ -211,7 +213,7 @@ export const media = {
 
   photography: serviceWork(
     'photography',
-    'photography-luxury-suv-studio',
+    'Professional-Studio-Photoshoot-of-a-Luxury-SUV',
     'Professional studio photography of a luxury SUV',
     {
       desktop: { aspect: '16 / 9', position: '50% 50%' },
@@ -230,7 +232,7 @@ export const media = {
 
   videoProduction: serviceWork(
     'video-production',
-    'video-production-post-studio',
+    'Post-Production-Studio-Monochrome-Photograph',
     'Monochrome post-production studio environment',
     {
       desktop: { aspect: '4 / 5', position: '50% 45%' },
@@ -249,7 +251,7 @@ export const media = {
 
   designBranding: serviceWork(
     'design-branding',
-    'design-branding-noir-aviary',
+    'Noir-Aviary-Boutique',
     'Noir Aviary boutique brand identity and art direction',
     {
       desktop: { aspect: '5 / 4', position: '50% 48%' },
@@ -268,7 +270,7 @@ export const media = {
 
   ecommerce: serviceWork(
     'ecommerce',
-    'ecommerce-eco-packaging',
+    'Eco-friendly-Product-Packaging-Concept',
     'Eco-friendly product packaging and commerce concept',
     {
       desktop: { aspect: '16 / 9', position: '50% 50%' },
