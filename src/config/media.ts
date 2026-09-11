@@ -181,7 +181,110 @@ const backdropPanel = (id: string, file: string): MediaAsset => ({
   treatment: BACKDROP_TREATMENT,
 });
 
+
+/*
+ * Selected work — Human Made Logic services.
+ *
+ * Each entry mirrors the aspect ratios of the asset it replaced, so the
+ * alternating card composition, image dimensions and stage proportions in the
+ * section are unchanged. Files are served locally from
+ * `public/images/hml/selected-work/` rather than hotlinked.
+ */
+const serviceWork = (
+  id: string,
+  file: string,
+  alt: string,
+  crops: { desktop: Crop; mobile: Crop },
+  treatment: Treatment,
+): MediaAsset => ({
+  id: `work-${id}`,
+  src: `/images/hml/selected-work/${file}.webp`,
+  alt,
+  desktop: crops.desktop,
+  mobile: crops.mobile,
+  radius: 12,
+  treatment,
+});
+
 export const media = {
+  /* ------------------------------------------------------- selected work */
+
+  photography: serviceWork(
+    'photography',
+    'photography-luxury-suv-studio',
+    'Professional studio photography of a luxury SUV',
+    {
+      desktop: { aspect: '16 / 9', position: '50% 50%' },
+      mobile: { aspect: '4 / 3', position: '50% 50%' },
+    },
+    {
+      mode: 'refract',
+      grade: EDITORIAL,
+      displacement: 0.9,
+      pointerInfluence: 1.8,
+      scrollInfluence: 0.6,
+      chromatic: 0.8,
+      damping: 10.5,
+    },
+  ),
+
+  videoProduction: serviceWork(
+    'video-production',
+    'video-production-post-studio',
+    'Monochrome post-production studio environment',
+    {
+      desktop: { aspect: '4 / 5', position: '50% 45%' },
+      mobile: { aspect: '4 / 5', position: '50% 45%' },
+    },
+    {
+      mode: 'current',
+      grade: EDITORIAL_COOL,
+      displacement: 0.85,
+      pointerInfluence: 1.6,
+      scrollInfluence: 0.8,
+      chromatic: 0.9,
+      damping: 9.5,
+    },
+  ),
+
+  designBranding: serviceWork(
+    'design-branding',
+    'design-branding-noir-aviary',
+    'Noir Aviary boutique brand identity and art direction',
+    {
+      desktop: { aspect: '5 / 4', position: '50% 48%' },
+      mobile: { aspect: '4 / 3', position: '50% 48%' },
+    },
+    {
+      mode: 'optical',
+      grade: EDITORIAL,
+      displacement: 0.9,
+      pointerInfluence: 1.9,
+      scrollInfluence: 0.4,
+      chromatic: 1,
+      damping: 11,
+    },
+  ),
+
+  ecommerce: serviceWork(
+    'ecommerce',
+    'ecommerce-eco-packaging',
+    'Eco-friendly product packaging and commerce concept',
+    {
+      desktop: { aspect: '16 / 9', position: '50% 50%' },
+      mobile: { aspect: '4 / 3', position: '50% 50%' },
+    },
+    {
+      mode: 'material',
+      grade: EDITORIAL_WARM,
+      displacement: 0.8,
+      pointerInfluence: 1.2,
+      scrollInfluence: 0.9,
+      damping: 8.5,
+      chromatic: 0.4,
+    },
+  ),
+
   /* Backdrop field — four hero studies softened into one shader-driven ground. */
   stageFieldOne: backdropPanel('one', 'hero-identity'),
   stageFieldTwo: backdropPanel('two', 'hero-artdirection'),
