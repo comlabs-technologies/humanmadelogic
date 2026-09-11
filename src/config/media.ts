@@ -181,7 +181,112 @@ const backdropPanel = (id: string, file: string): MediaAsset => ({
   treatment: BACKDROP_TREATMENT,
 });
 
+
+/*
+ * Selected work — Human Made Logic services.
+ *
+ * Each entry mirrors the aspect ratios of the asset it replaced, so the
+ * alternating card composition, image dimensions and stage proportions in the
+ * section are unchanged. Sources are the live humanmadelogic.fun uploads,
+ * allow-listed in `next.config.js`.
+ */
+const WORK_UPLOADS = 'https://humanmadelogic.fun/wp-content/uploads/2025/03';
+
+const serviceWork = (
+  id: string,
+  file: string,
+  alt: string,
+  crops: { desktop: Crop; mobile: Crop },
+  treatment: Treatment,
+): MediaAsset => ({
+  id: `work-${id}`,
+  src: `${WORK_UPLOADS}/${file}.webp`,
+  alt,
+  desktop: crops.desktop,
+  mobile: crops.mobile,
+  radius: 12,
+  treatment,
+});
+
 export const media = {
+  /* ------------------------------------------------------- selected work */
+
+  photography: serviceWork(
+    'photography',
+    'Professional-Studio-Photoshoot-of-a-Luxury-SUV',
+    'Professional studio photography of a luxury SUV',
+    {
+      desktop: { aspect: '16 / 9', position: '50% 50%' },
+      mobile: { aspect: '4 / 3', position: '50% 50%' },
+    },
+    {
+      mode: 'refract',
+      grade: EDITORIAL,
+      displacement: 0.9,
+      pointerInfluence: 1.8,
+      scrollInfluence: 0.6,
+      chromatic: 0.8,
+      damping: 10.5,
+    },
+  ),
+
+  videoProduction: serviceWork(
+    'video-production',
+    'Post-Production-Studio-Monochrome-Photograph',
+    'Monochrome post-production studio environment',
+    {
+      desktop: { aspect: '4 / 5', position: '50% 45%' },
+      mobile: { aspect: '4 / 5', position: '50% 45%' },
+    },
+    {
+      mode: 'current',
+      grade: EDITORIAL_COOL,
+      displacement: 0.85,
+      pointerInfluence: 1.6,
+      scrollInfluence: 0.8,
+      chromatic: 0.9,
+      damping: 9.5,
+    },
+  ),
+
+  designBranding: serviceWork(
+    'design-branding',
+    'Noir-Aviary-Boutique',
+    'Noir Aviary boutique brand identity and art direction',
+    {
+      desktop: { aspect: '5 / 4', position: '50% 48%' },
+      mobile: { aspect: '4 / 3', position: '50% 48%' },
+    },
+    {
+      mode: 'optical',
+      grade: EDITORIAL,
+      displacement: 0.9,
+      pointerInfluence: 1.9,
+      scrollInfluence: 0.4,
+      chromatic: 1,
+      damping: 11,
+    },
+  ),
+
+  ecommerce: serviceWork(
+    'ecommerce',
+    'Eco-friendly-Product-Packaging-Concept',
+    'Eco-friendly product packaging and commerce concept',
+    {
+      desktop: { aspect: '16 / 9', position: '50% 50%' },
+      mobile: { aspect: '4 / 3', position: '50% 50%' },
+    },
+    {
+      mode: 'material',
+      grade: EDITORIAL_WARM,
+      displacement: 0.8,
+      pointerInfluence: 1.2,
+      scrollInfluence: 0.9,
+      damping: 8.5,
+      chromatic: 0.4,
+    },
+  ),
+
   /* Backdrop field — four hero studies softened into one shader-driven ground. */
   stageFieldOne: backdropPanel('one', 'hero-identity'),
   stageFieldTwo: backdropPanel('two', 'hero-artdirection'),

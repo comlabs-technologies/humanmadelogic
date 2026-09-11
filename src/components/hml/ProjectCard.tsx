@@ -135,9 +135,9 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
               className="pointer-events-none absolute left-0 top-0 z-20 hidden h-[96px] w-[96px] items-center justify-center rounded-full bg-signalYellow text-center text-[11px] uppercase leading-[1.25] tracking-[0.12em] text-obsidian opacity-0 transition-opacity duration-300 lg:flex"
               style={{ transform: 'translate3d(-200px, -200px, 0) scale(0.72)' }}
             >
-              View
+              Explore
               <br />
-              project
+              service
             </span>
           </StageWindow>
         </ScenicStage>
