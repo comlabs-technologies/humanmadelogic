@@ -143,45 +143,55 @@ export type Project = {
 export const work = {
   label: '/ Selected work',
   heading: ['Ideas made visible.', 'Results made measurable.'],
+  /*
+   * Real Human Made Logic services. The field names are the section's
+   * originals so the component is untouched: `client` carries the service
+   * title, `summary` its description, `services` the tags, `result` the
+   * outcome line, and `year` the "Service" label that sits where a date did.
+   */
   items: [
     {
-      id: 'northline',
-      client: 'Northline',
-      summary: 'Repositioning a fintech platform for its next stage of growth',
-      services: ['Strategy', 'Identity', 'Digital'],
-      result: '42% increase in qualified demo enquiries',
-      year: '2025',
-      media: 'identity',
+      id: 'photography',
+      client: 'Photography',
+      summary:
+        'Professional photography for products, events and corporate needs—crafted to tell your story and highlight what makes your brand distinct.',
+      services: ['Product Photography', 'Events', 'Corporate'],
+      result: 'Images that tell the brand story',
+      year: 'Service',
+      media: 'photography',
       layout: 'monument',
     },
     {
-      id: 'soma',
-      client: 'Soma',
-      summary: 'Turning a wellness product into a culturally relevant daily ritual',
-      services: ['Campaign', 'Art Direction', 'Content'],
-      result: '3.1× campaign return on ad spend',
-      year: '2025',
-      media: 'culture',
+      id: 'video-production',
+      client: 'Video Production',
+      summary:
+        'Promotional films, commercials and cinematic narratives handled from concept and filming through editing and post-production.',
+      services: ['Creative Direction', 'Production', 'Post-production'],
+      result: 'From initial concept to final cut',
+      year: 'Service',
+      media: 'videoProduction',
       layout: 'offset-right',
     },
     {
-      id: 'fieldnote',
-      client: 'Fieldnote',
-      summary: 'A digital flagship for an independent fashion label',
-      services: ['E-commerce', 'UX', 'Development'],
-      result: '28% higher conversion rate',
-      year: '2024',
-      media: 'digital',
+      id: 'design-branding',
+      client: 'Design & Branding',
+      summary:
+        'From logos to complete identity systems, we create clean, distinctive visuals that capture your brand’s essence and help it stand out.',
+      services: ['Brand Strategy', 'Identity', 'Visual Design'],
+      result: 'Distinctive across every touchpoint',
+      year: 'Service',
+      media: 'designBranding',
       layout: 'offset-left',
     },
     {
-      id: 'common-ground',
-      client: 'Common Ground',
-      summary: 'Building a launch system for a modern hospitality group',
-      services: ['Brand', 'Web', 'Campaign'],
-      result: 'Three locations launched through one flexible system',
-      year: '2024',
-      media: 'terrain',
+      id: 'ecommerce',
+      client: 'eCommerce',
+      summary:
+        'Design-led eCommerce experiences paired with thoughtful technology—built to elevate businesses and help brands shine.',
+      services: ['eCommerce', 'UX Design', 'Development'],
+      result: 'Commerce experiences designed to perform',
+      year: 'Service',
+      media: 'ecommerce',
       layout: 'panorama',
     },
   ] as Project[],
