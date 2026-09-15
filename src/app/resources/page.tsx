@@ -14,6 +14,7 @@ export const metadata = buildMetadata({
   description:
     'Guides, customer stories and changelog entries for Relay — a full resources index and article route included with the template.',
   path: '/resources',
+  noindex: true,
 });
 
 const categoryForSection: Record<string, string> = {

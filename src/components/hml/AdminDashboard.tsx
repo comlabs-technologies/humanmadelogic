@@ -41,7 +41,9 @@ type Provider = {
 
 type Mail = {
   to: string;
-  smtp: boolean;
+  cc: string[];
+  provider: string;
+  configured: boolean;
   from: string;
 };
 
@@ -115,7 +117,7 @@ export function AdminDashboard({
             { value: String(items.length), label: 'enquiries' },
             { value: String(unread), label: 'unread' },
             { value: String(providers.filter((item) => item.configured).length), label: 'models live' },
-            { value: mail.smtp ? 'SMTP' : 'local', label: 'mailer' },
+            { value: mail.configured ? 'Brevo' : 'local', label: 'mailer' },
           ].map((item) => (
             <li key={item.label} className="flex items-baseline gap-3">
               <span className="text-[32px] tracking-[-0.04em]">{item.value}</span>
@@ -135,7 +137,11 @@ export function AdminDashboard({
                 Endpoint <code className="text-obsidian">{endpoint}</code>
               </p>
               <p className="mt-2 text-[15px] leading-[1.6] text-slate">
-                Mail to {mail.to}. {mail.smtp ? 'SMTP is configured.' : 'SMTP is not configured — messages are stored locally.'}
+                Mail to {mail.to}
+                {mail.cc.length > 0 ? `, cc ${mail.cc.join(', ')}` : ''}.{' '}
+                {mail.configured
+                  ? 'Brevo is configured.'
+                  : 'BREVO_API_KEY is not set — enquiries are stored here but not emailed.'}
               </p>
             </div>
             <RevealOnScroll className="lg:col-span-8">

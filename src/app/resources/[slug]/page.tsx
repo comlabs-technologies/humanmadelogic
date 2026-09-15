@@ -23,6 +23,7 @@ export function generateMetadata({ params }: Params) {
       title: 'Article not found',
       description: 'This article does not exist.',
       path: `/resources/${params.slug}`,
+      noindex: true,
     });
   }
 
@@ -32,6 +33,7 @@ export function generateMetadata({ params }: Params) {
     path: `/resources/${article.slug}`,
     type: 'article',
     publishedTime: article.date,
+    noindex: true,
   });
 }
 

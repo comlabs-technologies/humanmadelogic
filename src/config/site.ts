@@ -57,12 +57,12 @@ export type SiteConfig = {
 };
 
 export const siteConfig: SiteConfig = {
-  name: 'Relay',
-  titleSuffix: 'Relay',
-  tagline: 'A focused workspace for teams in motion.',
+  name: 'Human Made Logic',
+  titleSuffix: 'Human Made Logic',
+  tagline: 'Human instinct. Creative systems. Measurable growth.',
   description:
-    'Relay brings projects, knowledge, workflows, and AI assistance into one focused workspace, so teams can move from discussion to action without losing the thread.',
-  url: 'https://relay-template.vercel.app',
+    'Human Made Logic is an independent marketing and design agency. Photography, video production, design and branding, and eCommerce — built to make brands impossible to ignore.',
+  url: 'https://humanmadelogic.fun',
   locale: 'en',
   announcementBar: {
     label: 'Relay 2.4 adds review points to every automation',
@@ -82,10 +82,10 @@ export const siteConfig: SiteConfig = {
     { label: 'Guides', href: '/resources#guides' },
     { label: 'Contact', href: '/contact' },
   ],
-  contactEmail: 'hello@relay.example',
+  contactEmail: 'info@humanmadelogic.fun',
   contactPhone: '+1 (555) 014 2280',
   addressLines: ['Relay Software', 'Studio 4, 118 Wharf Lane', 'Portland, OR 97209'],
-  legalName: 'Relay Software, Inc.',
+  legalName: 'Human Made Logic',
   builtByLabel: 'Relay is a demo brand used to showcase this template.',
 };
 

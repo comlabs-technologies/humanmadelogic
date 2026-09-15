@@ -34,15 +34,19 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   applicationName: siteConfig.name,
   keywords: [
-    'Next.js template',
-    'SaaS landing page',
-    'AI product website',
-    'editorial design system',
-    'Tailwind CSS template',
+    'marketing agency',
+    'design agency',
+    'brand identity',
+    'product photography',
+    'video production',
+    'creative direction',
+    'ecommerce design',
+    'branding studio',
   ],
   authors: [{ name: siteConfig.legalName }],
   creator: siteConfig.legalName,
   alternates: { canonical: '/' },
+  referrer: 'origin-when-cross-origin',
   openGraph: {
     type: 'website',
     url: siteConfig.url,
@@ -59,7 +63,16 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
   },
+  category: 'Marketing and design agency',
+  formatDetection: { email: false, address: false, telephone: false },
 };
 
 export const viewport: Viewport = {

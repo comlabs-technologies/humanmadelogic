@@ -1,4 +1,5 @@
 import { ImageResponse } from 'next/og';
+import { agency } from '@/config/agency';
 import { siteConfig } from '@/config/site';
 
 export const alt = `${siteConfig.name} — ${siteConfig.tagline}`;
@@ -65,7 +66,7 @@ export default function OpenGraphImage() {
               letterSpacing: '-3px',
             }}
           >
-            Clear context for every decision.
+            We make brands impossible to ignore.
           </div>
           <div style={{ fontSize: '28px', color: '#5b594f', marginTop: '24px' }}>
             {siteConfig.tagline}
@@ -73,7 +74,7 @@ export default function OpenGraphImage() {
         </div>
 
         <div style={{ fontSize: '22px', color: '#8a877c', display: 'flex' }}>
-          Editorial AI SaaS template for Next.js
+          {agency.principle}
         </div>
       </div>
     ),

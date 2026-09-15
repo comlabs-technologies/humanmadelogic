@@ -1,34 +1,44 @@
-import nodemailer from 'nodemailer';
 import type { Inquiry } from './inquiries';
+
+/**
+ * Enquiry delivery via the Brevo transactional API.
+ *
+ * Deliberately HTTP rather than SMTP: serverless functions cannot reliably
+ * hold an outbound SMTP connection, and a blocked port fails silently at the
+ * worst possible moment. A `fetch` to Brevo either returns 2xx or tells us
+ * why, and needs no dependency.
+ */
+
+const BREVO_ENDPOINT = 'https://api.brevo.com/v3/smtp/email';
 
 export const CONTACT_TO = process.env.CONTACT_TO || 'info@humanmadelogic.fun';
 
-export function smtpConfigured() {
-  return Boolean(process.env.SMTP_HOST);
+/** Copied on every enquiry. Comma-separate the env var for more recipients. */
+export const CONTACT_CC = (process.env.CONTACT_CC || 'kuntal@humanmadelogic.fun')
+  .split(',')
+  .map((address) => address.trim())
+  .filter(Boolean);
+
+/**
+ * The verified sender. Brevo rejects anything that is not a verified sender
+ * or an authenticated domain, so this must match what is set up in the
+ * Brevo account — it is not the visitor's address.
+ */
+const SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || CONTACT_TO;
+const SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Human Made Logic';
+
+export function mailConfigured() {
+  return Boolean(process.env.BREVO_API_KEY);
 }
 
 export function mailStatus() {
   return {
     to: CONTACT_TO,
-    smtp: smtpConfigured(),
-    from: process.env.SMTP_FROM || CONTACT_TO,
+    cc: CONTACT_CC,
+    provider: 'brevo' as const,
+    configured: mailConfigured(),
+    from: SENDER_EMAIL,
   };
-}
-
-function createTransport() {
-  if (!smtpConfigured()) {
-    return nodemailer.createTransport({ jsonTransport: true });
-  }
-
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT || 587),
-    secure: process.env.SMTP_SECURE === 'true',
-    auth:
-      process.env.SMTP_USER && process.env.SMTP_PASS
-        ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-        : undefined,
-  });
 }
 
 function escapeHtml(value: string) {
@@ -39,40 +49,77 @@ function escapeHtml(value: string) {
     .replace(/"/g, '&quot;');
 }
 
-export async function sendInquiryEmail(inquiry: Omit<Inquiry, 'id' | 'createdAt' | 'emailed' | 'read'> & { id?: string }) {
-  const transport = createTransport();
-  const subject = `New enquiry — ${inquiry.name} (${inquiry.topic})`;
+function buildBody(inquiry: InquiryPayload) {
+  const rows: Array<[string, string]> = [
+    ['Name', inquiry.name],
+    ['Email', inquiry.email],
+    ['Company', inquiry.company || '—'],
+    ['Topic', inquiry.topic],
+    ['Source', inquiry.source],
+  ];
+
   const text = [
-    `Name: ${inquiry.name}`,
-    `Email: ${inquiry.email}`,
-    `Company: ${inquiry.company || '—'}`,
-    `Topic: ${inquiry.topic}`,
-    `Source: ${inquiry.source}`,
+    ...rows.map(([label, value]) => `${label}: ${value}`),
     '',
     inquiry.message,
   ].join('\n');
 
   const html = `
     <div style="font-family:Helvetica,Arial,sans-serif;color:#151515;line-height:1.55">
-      <p style="text-transform:uppercase;letter-spacing:0.18em;font-size:11px;color:#6B6A66">Human Made Logic</p>
-      <h1 style="font-size:22px;font-weight:500;letter-spacing:-0.03em">New studio enquiry</h1>
-      <p><strong>Name</strong><br>${escapeHtml(inquiry.name)}</p>
-      <p><strong>Email</strong><br>${escapeHtml(inquiry.email)}</p>
-      <p><strong>Company</strong><br>${escapeHtml(inquiry.company || '—')}</p>
-      <p><strong>Topic</strong><br>${escapeHtml(inquiry.topic)}</p>
-      <p><strong>Source</strong><br>${escapeHtml(inquiry.source)}</p>
-      <p><strong>Message</strong><br>${escapeHtml(inquiry.message).replace(/\n/g, '<br>')}</p>
+      <p style="text-transform:uppercase;letter-spacing:0.18em;font-size:11px;color:#6B6A66;margin:0 0 4px">Human Made Logic</p>
+      <h1 style="font-size:22px;font-weight:500;letter-spacing:-0.03em;margin:0 0 20px">New studio enquiry</h1>
+      ${rows
+        .map(
+          ([label, value]) =>
+            `<p style="margin:0 0 12px"><strong>${label}</strong><br>${escapeHtml(value)}</p>`,
+        )
+        .join('')}
+      <p style="margin:0"><strong>Message</strong><br>${escapeHtml(inquiry.message).replace(/\n/g, '<br>')}</p>
     </div>
   `;
 
-  await transport.sendMail({
-    from: process.env.SMTP_FROM || CONTACT_TO,
-    to: CONTACT_TO,
-    replyTo: inquiry.email,
-    subject,
-    text,
-    html,
+  return { text, html };
+}
+
+type InquiryPayload = Omit<Inquiry, 'id' | 'createdAt' | 'emailed' | 'read'> & { id?: string };
+
+export async function sendInquiryEmail(inquiry: InquiryPayload) {
+  const apiKey = process.env.BREVO_API_KEY;
+
+  if (!apiKey) {
+    // Surface it rather than reporting a send that never happened. The
+    // caller still persists the enquiry, so nothing is lost.
+    throw new Error('BREVO_API_KEY is not set — enquiry saved but not emailed');
+  }
+
+  const { text, html } = buildBody(inquiry);
+
+  const response = await fetch(BREVO_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'api-key': apiKey,
+      'content-type': 'application/json',
+      accept: 'application/json',
+    },
+    body: JSON.stringify({
+      sender: { email: SENDER_EMAIL, name: SENDER_NAME },
+      to: [{ email: CONTACT_TO }],
+      ...(CONTACT_CC.length > 0 ? { cc: CONTACT_CC.map((email) => ({ email })) } : {}),
+      // Replying from the inbox goes straight back to the enquirer.
+      replyTo: { email: inquiry.email, name: inquiry.name || inquiry.email },
+      subject: `New enquiry — ${inquiry.name} (${inquiry.topic})`,
+      textContent: text,
+      htmlContent: html,
+      tags: ['website-enquiry', inquiry.source],
+    }),
+    // Never let a hung provider hold the request open.
+    signal: AbortSignal.timeout(10_000),
   });
 
-  return smtpConfigured();
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '');
+    throw new Error(`Brevo rejected the message (${response.status}): ${detail.slice(0, 300)}`);
+  }
+
+  return true;
 }

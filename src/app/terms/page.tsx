@@ -7,6 +7,7 @@ export const metadata = buildMetadata({
   description:
     'Placeholder terms of service shipped with the Relay template, including template licence notes — replace before launch.',
   path: '/terms',
+  noindex: true,
 });
 
 export default function Terms() {

@@ -12,6 +12,7 @@ export const metadata = buildMetadata({
   description:
     'Three demo tiers — Starter, Team and Studio — with a full comparison table. Every value is editable from the template content layer.',
   path: '/pricing',
+  noindex: true,
 });
 
 function CellValue({ value }: { value: string }) {
