@@ -7,6 +7,7 @@ export const metadata = buildMetadata({
   description:
     'Placeholder privacy policy shipped with the Relay template, including a security section — replace it with a policy reviewed by your own counsel.',
   path: '/privacy',
+  noindex: true,
 });
 
 export default function Privacy() {

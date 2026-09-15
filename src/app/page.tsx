@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { HomePage } from '@/components/hml/HomePage';
+import { StructuredData } from '@/components/hml/StructuredData';
 import { agency, hero } from '@/config/agency';
 
 export const metadata: Metadata = {
@@ -21,5 +22,10 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <HomePage />;
+  return (
+    <>
+      <StructuredData />
+      <HomePage />
+    </>
+  );
 }

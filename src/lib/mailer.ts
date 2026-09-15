@@ -3,6 +3,12 @@ import type { Inquiry } from './inquiries';
 
 export const CONTACT_TO = process.env.CONTACT_TO || 'info@humanmadelogic.fun';
 
+/** Copied on every enquiry. Comma-separate the env var for more recipients. */
+export const CONTACT_CC = (process.env.CONTACT_CC || 'kuntal@humanmadelogic.fun')
+  .split(',')
+  .map((address) => address.trim())
+  .filter(Boolean);
+
 export function smtpConfigured() {
   return Boolean(process.env.SMTP_HOST);
 }
@@ -10,6 +16,7 @@ export function smtpConfigured() {
 export function mailStatus() {
   return {
     to: CONTACT_TO,
+    cc: CONTACT_CC,
     smtp: smtpConfigured(),
     from: process.env.SMTP_FROM || CONTACT_TO,
   };
@@ -65,14 +72,21 @@ export async function sendInquiryEmail(inquiry: Omit<Inquiry, 'id' | 'createdAt'
     </div>
   `;
 
+  if (!smtpConfigured()) {
+    // No SMTP in this environment: surface it rather than reporting a send
+    // that never happened. The enquiry is still persisted by the caller.
+    throw new Error('SMTP is not configured');
+  }
+
   await transport.sendMail({
     from: process.env.SMTP_FROM || CONTACT_TO,
     to: CONTACT_TO,
+    cc: CONTACT_CC.length > 0 ? CONTACT_CC : undefined,
     replyTo: inquiry.email,
     subject,
     text,
     html,
   });
 
-  return smtpConfigured();
+  return true;
 }

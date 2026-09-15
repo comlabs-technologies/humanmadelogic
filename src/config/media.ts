@@ -190,6 +190,16 @@ const backdropPanel = (id: string, file: string): MediaAsset => ({
  * section are unchanged. Sources are the live humanmadelogic.fun uploads,
  * allow-listed in `next.config.js`.
  */
+/*
+ * Selected Work sources.
+ *
+ * Currently the live WordPress uploads, allow-listed in `next.config.js`.
+ * To serve them from this repository instead — which removes the runtime
+ * dependency on that origin — run `./scripts/fetch-selected-work-images.sh`
+ * and change this one line to:
+ *
+ *   const WORK_UPLOADS = '/images/hml/selected-work';
+ */
 const WORK_UPLOADS = 'https://humanmadelogic.fun/wp-content/uploads/2025/03';
 
 const serviceWork = (

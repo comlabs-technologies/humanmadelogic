@@ -14,9 +14,12 @@ const initial: ContactFields = {
 
 const fieldClass = (invalid: boolean) =>
   [
-    'w-full h-12 px-4 rounded-full border bg-paper text-[15px] tracking-tight text-obsidian',
-    'placeholder:text-slate/80 transition-colors duration-300',
-    invalid ? 'border-[#b4442e]' : 'border-obsidian/15 hover:border-obsidian/35',
+    'w-full h-12 rounded-[10px] border bg-paper px-3.5 text-[15px] tracking-tight text-obsidian',
+    'placeholder:text-slate/70 transition-colors duration-200',
+    'focus:outline-none focus:ring-2 focus:ring-obsidian/70 focus:ring-offset-2 focus:ring-offset-paper',
+    invalid
+      ? 'border-[#b4442e] focus:ring-[#b4442e]/70'
+      : 'border-obsidian/20 hover:border-obsidian/40 focus:border-obsidian/50',
   ].join(' ');
 
 export function HmlContactForm() {
@@ -159,7 +162,11 @@ export function HmlContactForm() {
             name="topic"
             value={values.topic}
             onChange={(event) => update('topic', event.target.value)}
-            className={`${fieldClass(false)} appearance-none pr-8`}
+            className={`${fieldClass(false)} cursor-pointer appearance-none bg-[length:12px] bg-[right_0.9rem_center] bg-no-repeat pr-10`}
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%236B6A66' stroke-width='1.5'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E\")",
+            }}
           >
             {contact.topics.map((topic) => (
               <option key={topic} value={topic}>
@@ -177,12 +184,12 @@ export function HmlContactForm() {
         <textarea
           id="message"
           name="message"
-          rows={6}
+          rows={5}
           value={values.message}
           onChange={(event) => update('message', event.target.value)}
           onBlur={() => blur('message')}
           aria-invalid={invalid('message')}
-          className={`${fieldClass(invalid('message'))} h-auto rounded-[18px] py-3`}
+          className={`${fieldClass(invalid('message'))} h-auto min-h-[132px] resize-y py-3 leading-[1.55]`}
           placeholder="What are you building, changing, or trying to make impossible to ignore?"
         />
         {invalid('message') && <p className="mt-2 text-[12px] text-[#b4442e]">{errors.message}</p>}
@@ -211,7 +218,9 @@ export function HmlContactForm() {
             →
           </span>
         </button>
-        <p className="text-[13px] text-slate">Goes to {contact.details[0].value}.</p>
+        <p className="text-[13px] text-slate">
+          Goes straight to {contact.details[0].value}. We reply within one working day.
+        </p>
       </div>
 
       {serverError && (

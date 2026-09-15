@@ -11,12 +11,15 @@ export function buildMetadata({
   path = '/',
   type = 'website',
   publishedTime,
+  noindex = false,
 }: {
   title: string;
   description: string;
   path?: string;
   type?: 'website' | 'article';
   publishedTime?: string;
+  /** Keeps a page out of the index — used by the leftover template routes. */
+  noindex?: boolean;
 }): Metadata {
   const url = new URL(path, siteConfig.url).toString();
   const fullTitle = `${title} — ${siteConfig.titleSuffix}`;
@@ -25,6 +28,7 @@ export function buildMetadata({
     title,
     description,
     alternates: { canonical: url },
+    ...(noindex ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       title: fullTitle,
       description,
