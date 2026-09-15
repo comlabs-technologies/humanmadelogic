@@ -224,10 +224,10 @@ export const media = {
   photography: serviceWork(
     'photography',
     'Professional-Studio-Photoshoot-of-a-Luxury-SUV',
-    'Professional studio photography of a luxury SUV',
+    'A silver-blue performance SUV lit in a photographic studio, ringed by softboxes and warm strip lighting',
     {
-      desktop: { aspect: '16 / 9', position: '50% 50%' },
-      mobile: { aspect: '4 / 3', position: '50% 50%' },
+      desktop: { aspect: '16 / 9', position: '50% 58%' },
+      mobile: { aspect: '4 / 3', position: '52% 58%' },
     },
     {
       mode: 'refract',
@@ -243,29 +243,29 @@ export const media = {
   videoProduction: serviceWork(
     'video-production',
     'Post-Production-Studio-Monochrome-Photograph',
-    'Monochrome post-production studio environment',
+    'Three editors silhouetted at monitors in a darkened post-production suite',
     {
-      desktop: { aspect: '4 / 5', position: '50% 45%' },
-      mobile: { aspect: '4 / 5', position: '50% 45%' },
+      desktop: { aspect: '4 / 5', position: '50% 52%' },
+      mobile: { aspect: '4 / 5', position: '50% 52%' },
     },
     {
-      mode: 'current',
+      mode: 'refract',
       grade: EDITORIAL_COOL,
-      displacement: 0.85,
-      pointerInfluence: 1.6,
-      scrollInfluence: 0.8,
-      chromatic: 0.9,
-      damping: 9.5,
+      displacement: 0.7,
+      pointerInfluence: 1.5,
+      scrollInfluence: 0.6,
+      chromatic: 0.7,
+      damping: 10,
     },
   ),
 
   designBranding: serviceWork(
     'design-branding',
     'Noir-Aviary-Boutique',
-    'Noir Aviary boutique brand identity and art direction',
+    'The Noir Aviary shopfront: a black facade with yellow window panels and bird motifs',
     {
-      desktop: { aspect: '5 / 4', position: '50% 48%' },
-      mobile: { aspect: '4 / 3', position: '50% 48%' },
+      desktop: { aspect: '5 / 4', position: '50% 62%' },
+      mobile: { aspect: '4 / 3', position: '50% 62%' },
     },
     {
       mode: 'optical',
@@ -281,10 +281,10 @@ export const media = {
   ecommerce: serviceWork(
     'ecommerce',
     'Eco-friendly-Product-Packaging-Concept',
-    'Eco-friendly product packaging and commerce concept',
+    'A flat-lay of kraft and white product packaging, folded garments and ceramics on a blue ground',
     {
-      desktop: { aspect: '16 / 9', position: '50% 50%' },
-      mobile: { aspect: '4 / 3', position: '50% 50%' },
+      desktop: { aspect: '16 / 9', position: '50% 52%' },
+      mobile: { aspect: '4 / 3', position: '50% 52%' },
     },
     {
       mode: 'material',

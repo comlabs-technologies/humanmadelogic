@@ -5,7 +5,6 @@ const nextConfig = {
       '@modelcontextprotocol/server',
       '@modelcontextprotocol/core',
       'mcp-handler',
-      'nodemailer',
     ],
   },
   images: {
