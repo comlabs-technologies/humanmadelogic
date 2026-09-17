@@ -1,15 +1,17 @@
+import nodemailer from 'nodemailer';
+import type { Transporter } from 'nodemailer';
 import type { Inquiry } from './inquiries';
 
 /**
- * Enquiry delivery via the Brevo transactional API.
+ * Enquiry delivery over Google's SMTP.
  *
- * Deliberately HTTP rather than SMTP: serverless functions cannot reliably
- * hold an outbound SMTP connection, and a blocked port fails silently at the
- * worst possible moment. A `fetch` to Brevo either returns 2xx or tells us
- * why, and needs no dependency.
+ * Gmail and Google Workspace both require an App Password here — a normal
+ * account password is rejected, and the account must have 2-Step Verification
+ * switched on before App Passwords can be generated. Google also insists the
+ * envelope sender matches the authenticated user (or one of its verified
+ * "Send mail as" aliases), so the visitor's address goes in `replyTo` rather
+ * than `from`.
  */
-
-const BREVO_ENDPOINT = 'https://api.brevo.com/v3/smtp/email';
 
 export const CONTACT_TO = process.env.CONTACT_TO || 'info@humanmadelogic.fun';
 
@@ -19,26 +21,49 @@ export const CONTACT_CC = (process.env.CONTACT_CC || 'kuntal@humanmadelogic.fun'
   .map((address) => address.trim())
   .filter(Boolean);
 
-/**
- * The verified sender. Brevo rejects anything that is not a verified sender
- * or an authenticated domain, so this must match what is set up in the
- * Brevo account — it is not the visitor's address.
- */
-const SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || CONTACT_TO;
-const SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Human Made Logic';
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
+const SMTP_PORT = Number(process.env.SMTP_PORT || 465);
+/** Implicit TLS on 465, STARTTLS on 587. */
+const SMTP_SECURE = process.env.SMTP_SECURE
+  ? process.env.SMTP_SECURE === 'true'
+  : SMTP_PORT === 465;
+
+const SMTP_USER = process.env.SMTP_USER || '';
+const SMTP_PASS = process.env.SMTP_PASS || '';
+const SMTP_FROM = process.env.SMTP_FROM || SMTP_USER;
+const SMTP_FROM_NAME = process.env.SMTP_FROM_NAME || 'Human Made Logic';
 
 export function mailConfigured() {
-  return Boolean(process.env.BREVO_API_KEY);
+  return Boolean(SMTP_USER && SMTP_PASS);
 }
 
 export function mailStatus() {
   return {
     to: CONTACT_TO,
     cc: CONTACT_CC,
-    provider: 'brevo' as const,
+    provider: `smtp:${SMTP_HOST}`,
     configured: mailConfigured(),
-    from: SENDER_EMAIL,
+    from: SMTP_FROM,
   };
+}
+
+let transporter: Transporter | null = null;
+
+function getTransport() {
+  if (transporter) return transporter;
+
+  transporter = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_SECURE,
+    auth: { user: SMTP_USER, pass: SMTP_PASS },
+    // A serverless invocation must not hang on a silent SMTP port.
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 15_000,
+  });
+
+  return transporter;
 }
 
 function escapeHtml(value: string) {
@@ -49,6 +74,8 @@ function escapeHtml(value: string) {
     .replace(/"/g, '&quot;');
 }
 
+type InquiryPayload = Omit<Inquiry, 'id' | 'createdAt' | 'emailed' | 'read'> & { id?: string };
+
 function buildBody(inquiry: InquiryPayload) {
   const rows: Array<[string, string]> = [
     ['Name', inquiry.name],
@@ -58,11 +85,9 @@ function buildBody(inquiry: InquiryPayload) {
     ['Source', inquiry.source],
   ];
 
-  const text = [
-    ...rows.map(([label, value]) => `${label}: ${value}`),
-    '',
-    inquiry.message,
-  ].join('\n');
+  const text = [...rows.map(([label, value]) => `${label}: ${value}`), '', inquiry.message].join(
+    '\n',
+  );
 
   const html = `
     <div style="font-family:Helvetica,Arial,sans-serif;color:#151515;line-height:1.55">
@@ -81,45 +106,25 @@ function buildBody(inquiry: InquiryPayload) {
   return { text, html };
 }
 
-type InquiryPayload = Omit<Inquiry, 'id' | 'createdAt' | 'emailed' | 'read'> & { id?: string };
-
 export async function sendInquiryEmail(inquiry: InquiryPayload) {
-  const apiKey = process.env.BREVO_API_KEY;
-
-  if (!apiKey) {
+  if (!mailConfigured()) {
     // Surface it rather than reporting a send that never happened. The
     // caller still persists the enquiry, so nothing is lost.
-    throw new Error('BREVO_API_KEY is not set — enquiry saved but not emailed');
+    throw new Error('SMTP_USER / SMTP_PASS are not set — enquiry saved but not emailed');
   }
 
   const { text, html } = buildBody(inquiry);
 
-  const response = await fetch(BREVO_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'api-key': apiKey,
-      'content-type': 'application/json',
-      accept: 'application/json',
-    },
-    body: JSON.stringify({
-      sender: { email: SENDER_EMAIL, name: SENDER_NAME },
-      to: [{ email: CONTACT_TO }],
-      ...(CONTACT_CC.length > 0 ? { cc: CONTACT_CC.map((email) => ({ email })) } : {}),
-      // Replying from the inbox goes straight back to the enquirer.
-      replyTo: { email: inquiry.email, name: inquiry.name || inquiry.email },
-      subject: `New enquiry — ${inquiry.name} (${inquiry.topic})`,
-      textContent: text,
-      htmlContent: html,
-      tags: ['website-enquiry', inquiry.source],
-    }),
-    // Never let a hung provider hold the request open.
-    signal: AbortSignal.timeout(10_000),
+  await getTransport().sendMail({
+    from: { address: SMTP_FROM, name: SMTP_FROM_NAME },
+    to: CONTACT_TO,
+    cc: CONTACT_CC.length > 0 ? CONTACT_CC : undefined,
+    // Replying from the inbox goes straight back to the enquirer.
+    replyTo: inquiry.email,
+    subject: `New enquiry — ${inquiry.name} (${inquiry.topic})`,
+    text,
+    html,
   });
-
-  if (!response.ok) {
-    const detail = await response.text().catch(() => '');
-    throw new Error(`Brevo rejected the message (${response.status}): ${detail.slice(0, 300)}`);
-  }
 
   return true;
 }
