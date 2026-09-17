@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { contact } from '@/config/agency';
 import { validateContact, type ContactFields } from '@/lib/contact';
 import { saveInquiry } from '@/lib/inquiries';
-import { sendInquiryEmail } from '@/lib/mailer';
+import { describeMailError, noteMailFailure, noteMailSuccess, sendInquiryEmail } from '@/lib/mailer';
 import { clientKey, rateLimit } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
@@ -38,17 +38,36 @@ export async function POST(request: Request) {
   }
 
   let emailed = false;
+  let mailError: string | null = null;
+
   try {
     emailed = await sendInquiryEmail({ ...fields, source: 'contact' });
-  } catch {
-    emailed = false;
+    noteMailSuccess();
+  } catch (error) {
+    mailError = describeMailError(error);
+    noteMailFailure(mailError);
+    // Logged so the reason shows up in the platform's function logs; the
+    // visitor is never shown SMTP internals.
+    console.error('[contact] enquiry email failed:', mailError);
   }
 
-  const inquiry = await saveInquiry(fields, { emailed, source: 'contact' });
+  // Persistence is a convenience for /admin, not the delivery path. A
+  // read-only or full filesystem must never turn a successful send into a
+  // 500 for the visitor.
+  let id: string | null = null;
+  try {
+    id = (await saveInquiry(fields, { emailed, source: 'contact' })).id;
+  } catch (error) {
+    console.error('[contact] enquiry could not be stored:', (error as Error).message);
+  }
 
-  return NextResponse.json({
-    ok: true,
-    id: inquiry.id,
-    emailed,
-  });
+  // Nothing got through: tell the visitor rather than showing a false success.
+  if (!emailed && !id) {
+    return NextResponse.json(
+      { ok: false, error: 'We could not send your message. Please email us directly.' },
+      { status: 502 },
+    );
+  }
+
+  return NextResponse.json({ ok: true, id, emailed });
 }

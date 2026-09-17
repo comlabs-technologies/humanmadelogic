@@ -10,8 +10,22 @@ export type Inquiry = ContactFields & {
   source: 'contact' | 'mcp';
 };
 
+/**
+ * Where enquiries are written.
+ *
+ * On Vercel the deployment filesystem is read-only apart from /tmp, so the
+ * default has to live there or every write throws EROFS. /tmp is per-instance
+ * and ephemeral — it is a short-term buffer, not storage. Point
+ * INQUIRIES_PATH at a persistent volume, or move this to a database, if the
+ * admin list needs to survive.
+ */
+const onVercel = () => Boolean(process.env.VERCEL);
+
 const storePath = () =>
-  process.env.INQUIRIES_PATH || path.join(process.cwd(), 'data', 'inquiries.json');
+  process.env.INQUIRIES_PATH ||
+  (onVercel()
+    ? path.join('/tmp', 'hml-inquiries.json')
+    : path.join(process.cwd(), 'data', 'inquiries.json'));
 
 let queue: Promise<unknown> = Promise.resolve();
 
