@@ -6,7 +6,7 @@ import { HmlPageShell } from '@/components/hml/HmlPageShell';
 import { agency, admin } from '@/config/agency';
 import { ADMIN_COOKIE, verifyAdminToken } from '@/lib/admin-auth';
 import { listInquiries } from '@/lib/inquiries';
-import { mailStatus } from '@/lib/mailer';
+import { mailDiagnostics } from '@/lib/mailer';
 import { providerStatus } from '@/lib/models';
 
 export const dynamic = 'force-dynamic';
@@ -36,7 +36,7 @@ export default async function AdminPage() {
       <AdminDashboard
         inquiries={inquiries}
         providers={providerStatus()}
-        mail={mailStatus()}
+        mail={mailDiagnostics()}
         endpoint="/api/mcp"
       />
     </HmlPageShell>

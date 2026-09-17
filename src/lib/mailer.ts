@@ -37,6 +37,7 @@ export function mailConfigured() {
   return Boolean(SMTP_USER && SMTP_PASS);
 }
 
+/** Safe to expose on the unauthenticated status endpoint. */
 export function mailStatus() {
   return {
     to: CONTACT_TO,
@@ -45,6 +46,26 @@ export function mailStatus() {
     configured: mailConfigured(),
     from: SMTP_FROM,
   };
+}
+
+/** Transport detail and the last failure. Admin surfaces only. */
+export function mailDiagnostics() {
+  return {
+    ...mailStatus(),
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_SECURE,
+    user: maskAddress(SMTP_USER),
+    lastError: lastMailError(),
+  };
+}
+
+/** Enough of an address to recognise it, not enough to leak it. */
+function maskAddress(address: string) {
+  if (!address) return '';
+  const [local, domain] = address.split('@');
+  if (!domain) return `${local.slice(0, 2)}***`;
+  return `${local.slice(0, 2)}***@${domain}`;
 }
 
 let transporter: Transporter | null = null;
@@ -104,6 +125,53 @@ function buildBody(inquiry: InquiryPayload) {
   `;
 
   return { text, html };
+}
+
+/** Human-readable reason a send failed, for logs and the admin panel. */
+export function describeMailError(error: unknown): string {
+  if (!error) return 'Unknown error';
+  const err = error as NodeJS.ErrnoException & { responseCode?: number; response?: string };
+  const parts = [err.code, err.responseCode ? `SMTP ${err.responseCode}` : '', err.message]
+    .filter(Boolean)
+    .join(' · ');
+  const response = err.response ? ` — ${String(err.response).slice(0, 200)}` : '';
+  return `${parts}${response}`.trim() || String(error);
+}
+
+/**
+ * Last delivery outcome, kept in module memory so /admin can show why mail is
+ * failing without anyone reading platform logs. It resets on cold start and is
+ * per-instance — a diagnostic, not a record.
+ */
+let lastMailFailure: { at: string; reason: string } | null = null;
+
+export function noteMailFailure(reason: string) {
+  lastMailFailure = { at: new Date().toISOString(), reason };
+}
+
+export function noteMailSuccess() {
+  lastMailFailure = null;
+}
+
+export function lastMailError() {
+  return lastMailFailure;
+}
+
+/**
+ * Opens a connection and authenticates without sending anything. This is what
+ * turns "mail is not working" into Google's actual reason.
+ */
+export async function verifyMail() {
+  if (!mailConfigured()) {
+    return { ok: false as const, reason: 'SMTP_USER / SMTP_PASS are not set' };
+  }
+
+  try {
+    await getTransport().verify();
+    return { ok: true as const };
+  } catch (error) {
+    return { ok: false as const, reason: describeMailError(error) };
+  }
 }
 
 export async function sendInquiryEmail(inquiry: InquiryPayload) {
